@@ -129,6 +129,37 @@ function contrastScan() {
       }
     }
   }
+
+  /* ::before / ::after 生成的文字不在文本节点里，TreeWalker 扫不到（比如卡片上的
+     「展开 ▾」），这里按伪元素再查一遍，免得留下盲区。 */
+  var nodes = document.querySelectorAll('*');
+  for (var i = 0; i < nodes.length; i++) {
+    var host = nodes[i];
+    ['::before', '::after'].forEach(function (pseudo) {
+      var ps = window.getComputedStyle(host, pseudo);
+      var content = ps.content;
+      if (!content || content === 'none' || content === 'normal' ||
+          content === '""' || content === "''") { return; }
+      if (ps.display === 'none' || ps.visibility === 'hidden') { return; }
+      var bg = bgOf(host, window);
+      var fg = blend(parseColor(ps.color), bg);
+      var cr = ratio(fg, bg);
+      var size = parseFloat(ps.fontSize);
+      var weight = parseInt(ps.fontWeight, 10) || 400;
+      var need = (size >= 24 || (size >= 18.66 && weight >= 700)) ? 3.0 : 4.5;
+      checked++;
+      if (cr < need) {
+        var cls = String(host.className || host.tagName) + pseudo;
+        if (!seen[cls]) {
+          seen[cls] = 1;
+          bad.push({ text: String(content).slice(0, 20), cls: cls, color: ps.color,
+                     bg: 'rgb(' + Math.round(bg.r) + ',' + Math.round(bg.g) + ',' + Math.round(bg.b) + ')',
+                     size: size + 'px',
+                     ratio: Math.round(cr * 100) / 100, need: need });
+        }
+      }
+    });
+  }
   return { bad: bad, checked: checked };
 }
 
