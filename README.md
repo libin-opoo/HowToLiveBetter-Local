@@ -1,5 +1,9 @@
 # HowToLiveBetter-Local
 
+> 🌐 **在线版：<https://libin-opoo.github.io/HowToLiveBetter-Local/>**
+> （手机、平板都能直接打开；也可双击本地 `index.html` 离线使用）
+
+
 《[高性价比人生指南](https://github.com/eternity4719/HowToLiveBetter)》的本地镜像 + 结构化数据抽取 + 本地检索页。
 
 ## 目录结构
