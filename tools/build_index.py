@@ -77,8 +77,12 @@ HTML = r"""<!doctype html>
   .chip:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
   .chip[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
 
-  .status{margin:14px 2px 10px;color:var(--ink-2);font-size:.875rem}
+  .status{
+    margin:14px 2px 10px;color:var(--ink-2);font-size:.875rem;
+    display:flex;gap:8px 14px;flex-wrap:wrap;justify-content:space-between;
+  }
   .status b{color:var(--primary-dark)}
+  .status-sort{white-space:nowrap;color:var(--ink-3)}
 
   /* ---------- 卡片列表 ---------- */
   .cards{display:grid;gap:12px;grid-template-columns:1fr;align-items:start}
@@ -122,6 +126,9 @@ HTML = r"""<!doctype html>
     display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
     line-clamp:2;overflow:hidden;
   }
+  /* 搜索时放宽摘要行数，让命中的关键词更容易露出来 */
+  .cards.searching .brief{-webkit-line-clamp:4;line-clamp:4}
+  mark{background:#b6dcff;color:#0f2a45;border-radius:3px;padding:0 1px}
   .card[aria-expanded="true"] .brief{display:block;overflow:visible}
 
   .full{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
@@ -229,19 +236,81 @@ HTML = r"""<!doctype html>
     return n;
   }
 
-  function haystack(r) {
-    return [r['标题'], r['内容'], r['所属主题'], r['成本'], r['收益'], r['证据等级'],
-            r['来源出处'], r['备注']].join('\n').toLowerCase();
+  /* 搜索范围：只匹配 data.json 的标题、内容、所属主题三个字段 */
+  var SEARCH_FIELDS = ['标题', '内容', '所属主题'];
+
+  /* 模糊匹配：按空白拆成多个关键词，全部命中才算匹配（AND） */
+  function terms() {
+    var q = state.q.trim().toLowerCase();
+    return q ? q.split(/\s+/).filter(Boolean) : [];
   }
 
-  function filterData() {
-    var q = state.q.trim().toLowerCase();
+  function matchTerms(r, ts) {
+    if (!ts.length) { return true; }
+    var hay = SEARCH_FIELDS.map(function (f) { return r[f] || ''; })
+                           .join('\n').toLowerCase();
+    for (var i = 0; i < ts.length; i++) {
+      if (hay.indexOf(ts[i]) === -1) { return false; }
+    }
+    return true;
+  }
+
+  function filterData(ts) {
     var themes = state.cat ? CATEGORIES[state.cat] : null;
     return DATA.filter(function (r) {
       if (themes && themes.indexOf(r['所属主题']) === -1) { return false; }
-      if (!q) { return true; }
-      return haystack(r).indexOf(q) !== -1;
+      return matchTerms(r, ts);
     });
+  }
+
+  /* 证据等级排序：A -> B -> C，同级保持 data.json 里的原始顺序 */
+  var EV_RANK = { A: 0, B: 1, C: 2 };
+  function evRank(level) {
+    var k = (level || 'C').trim().charAt(0).toUpperCase();
+    return EV_RANK[k] == null ? 3 : EV_RANK[k];
+  }
+  function sortByEvidence(rows) {
+    return rows
+      .map(function (r, i) { return { r: r, i: i }; })
+      .sort(function (a, b) {
+        var d = evRank(a.r['证据等级']) - evRank(b.r['证据等级']);
+        return d !== 0 ? d : a.i - b.i;
+      })
+      .map(function (x) { return x.r; });
+  }
+
+  /* 把命中的关键词包成 <mark>，只用 DOM 节点拼，不碰 innerHTML */
+  function setText(el, text, ts) {
+    text = text || '';
+    if (!ts || !ts.length) { el.textContent = text; return; }
+    var lower = text.toLowerCase();
+    var ranges = [];
+    for (var i = 0; i < ts.length; i++) {
+      var t = ts[i], from = 0, idx;
+      if (!t) { continue; }
+      while ((idx = lower.indexOf(t, from)) !== -1) {
+        ranges.push([idx, idx + t.length]);
+        from = idx + t.length;
+      }
+    }
+    if (!ranges.length) { el.textContent = text; return; }
+    ranges.sort(function (a, b) { return a[0] - b[0]; });
+    var merged = [ranges[0]];
+    for (var j = 1; j < ranges.length; j++) {
+      var last = merged[merged.length - 1];
+      if (ranges[j][0] <= last[1]) { last[1] = Math.max(last[1], ranges[j][1]); }
+      else { merged.push(ranges[j]); }
+    }
+    var pos = 0;
+    for (var k = 0; k < merged.length; k++) {
+      var rg = merged[k];
+      if (rg[0] > pos) { el.appendChild(document.createTextNode(text.slice(pos, rg[0]))); }
+      var mk = document.createElement('mark');
+      mk.textContent = text.slice(rg[0], rg[1]);
+      el.appendChild(mk);
+      pos = rg[1];
+    }
+    if (pos < text.length) { el.appendChild(document.createTextNode(text.slice(pos))); }
   }
 
   /* 展开内容按需构建，首屏只渲染标题和摘要，保证 650 条也不卡 */
@@ -260,23 +329,29 @@ HTML = r"""<!doctype html>
     card.dataset.full = '1';
   }
 
-  function makeCard(r) {
+  function makeCard(r, ts) {
     var card = el('article', 'card');
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
     card.setAttribute('aria-expanded', 'false');
 
     var head = el('div', 'card-head');
-    head.appendChild(el('h2', 'card-title', r['标题']));
+    var h2 = el('h2', 'card-title');
+    setText(h2, r['标题'], ts);
+    head.appendChild(h2);
     head.appendChild(el('span', 'ev ev-' + ((r['证据等级'] || 'C').charAt(0)), r['证据等级']));
     card.appendChild(head);
 
     var meta = el('div', 'card-meta');
-    meta.appendChild(el('span', 'theme', r['所属主题']));
+    var theme = el('span', 'theme');
+    setText(theme, r['所属主题'], ts);
+    meta.appendChild(theme);
     meta.appendChild(el('span', 'hint', ''));
     card.appendChild(meta);
 
-    card.appendChild(el('p', 'brief', r['内容']));
+    var brief = el('p', 'brief');
+    setText(brief, r['内容'], ts);
+    card.appendChild(brief);
 
     function toggle() {
       var open = card.getAttribute('aria-expanded') === 'true';
@@ -297,10 +372,13 @@ HTML = r"""<!doctype html>
   }
 
   function render() {
-    var rows = filterData();
+    var ts = terms();
+    var rows = sortByEvidence(filterData(ts));
+
     var frag = document.createDocumentFragment();
-    for (var i = 0; i < rows.length; i++) { frag.appendChild(makeCard(rows[i])); }
+    for (var i = 0; i < rows.length; i++) { frag.appendChild(makeCard(rows[i], ts)); }
     cardsEl.textContent = '';
+    cardsEl.classList.toggle('searching', ts.length > 0);
     cardsEl.appendChild(frag);
 
     if (!rows.length) {
@@ -310,9 +388,11 @@ HTML = r"""<!doctype html>
     var desc = [];
     if (state.cat) { desc.push('<b>' + state.cat + '</b>'); }
     if (state.q.trim()) { desc.push('“' + escapeHtml(state.q.trim()) + '”'); }
-    statusEl.innerHTML = desc.length
+    var main = desc.length
       ? desc.join(' · ') + ' 命中 ' + rows.length + ' 条 / 共 ' + DATA.length + ' 条'
       : '共 ' + rows.length + ' 条';
+    statusEl.innerHTML = '<span class="status-main">' + main + '</span>' +
+      '<span class="status-sort">按证据等级 A→C 排序</span>';
   }
 
   function escapeHtml(s) {
