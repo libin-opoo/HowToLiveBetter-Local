@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "recordCount": 650,
+  "upstream": {
+    "repo": "eternity4719/HowToLiveBetter",
+    "url": "git@github.com:eternity4719/HowToLiveBetter.git",
+    "commit": "fcc93eb9a4bdc26e8a4e4c94bdaae0a89265927b",
+    "commitDate": "2026-10-02 08:03:26 +0800",
+    "subject": "按 issue #63 在第 1 节末尾追加第 41 条：上野外冰面前打孔量厚度，国内官方 15 厘米、美加透明冰 10 厘米白冰翻倍、边走边量、流水和冰钓洞边别去，备注写落冰自救；证据等级按安全指南定为 C，原稿「规避绝大多数事故」无出处未收；第 1 节第 12 条、第 13 节第 25 条补反向指路；统计同步"
+  },
+  "syncCount": 0,
+  "lastSyncAt": null,
+  "history": [
+    {
+      "version": "1.0.0",
+      "at": "2026-10-02T16:14:08",
+      "upstreamCommit": "fcc93eb9a4bdc26e8a4e4c94bdaae0a89265927b",
+      "records": 650,
+      "added": 0,
+      "removed": 0,
+      "changed": 0,
+      "note": "初始基线"
+    }
+  ]
+}

@@ -7,3 +7,9 @@ Thumbs.db
 .io-probe.html
 .theme-probe-*.html
 .perf-probe.html
+# 同步产生的本地版本备份（GitHub 上的提交历史本身就是每份 data.json 的备份）
+backups/
+.sync.lock
+
+# 同步日志
+logs/

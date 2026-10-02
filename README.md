@@ -16,6 +16,44 @@
 | `tools/check_io.py` | 功能测试：导入导出、格式校验、持久化、还原共 32 项断言 |
 | `tools/check_theme.py` | 配色测试：浅色/深色/跟随系统的全页文字对比度（WCAG AA） |
 | `tools/check_perf.py` | 性能检查：内容是否先于数据请求出现（file:// 与 http:// 各测一遍） |
+| `tools/sync_upstream.py` | 自动同步引擎：拉上游、重建数据、打版本备份、提交推送 |
+| `tools/install-sync-task.ps1` | 注册/卸载 Windows 计划任务，定时跑上面的同步 |
+| `tools/check_sync.py` | 端到端测试自动同步：假上游 + 33 项断言 |
+| `sync-state.json` | 当前版本号、上游 commit、完整版本历史 |
+| `使用说明.md` | 面向使用者的说明：打开方法、操作指南、维护说明 |
+
+## 自动同步与版本管理
+
+```bash
+python3 tools/sync_upstream.py --check    # 只看上游有没有更新
+python3 tools/sync_upstream.py            # 同步 + 提交 + 推送
+python3 tools/sync_upstream.py --no-push  # 只提交
+python3 tools/sync_upstream.py --rollback 1.0.0
+```
+
+一次同步的顺序：浅克隆上游 → 和 `sync-state.json` 里的 commit 比对 → 变了才继续 →
+替换 `upstream/` → 重跑抽取 → 比对新旧数据算出增删改 → 版本号自增 →
+备份旧 `data.json` 到 `backups/` → 重建 `index.html` → 更新 `sync-state.json` → 提交 → 推送。
+
+- **幂等**：上游没变就直接退出，不产生空提交。
+- **失败不落地**：任何一步出错都不会提交，仓库保持原样。
+- **只动自己的文件**：`git add` 只针对 `upstream/ data.json index.html sync-state.json`，
+  不会把你其他的本地改动一起提交。
+- **版本号**：有条目增删升中间位（`1.0.0`→`1.1.0`），只是内容修订升末位（`1.0.0`→`1.0.1`）。
+- **提交备注**自动写明版本号、上游 commit、条目数变化和具体改了哪几条。
+- **备份**放 `backups/`，只留最近 20 份，**不进 Git**（GitHub 上的提交历史本身就是
+  每个版本 `data.json` 的备份，那份更长久）。
+
+Windows 定时任务（每天 + 登录时）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\install-sync-task.ps1
+powershell -ExecutionPolicy Bypass -File tools\install-sync-task.ps1 -Remove
+```
+
+> 本文件里的 `.ps1` 必须存成 **UTF-8 with BOM**：Windows PowerShell 5.1 在没有 BOM 时
+> 按系统 ANSI 读取，中文会被拆坏并报语法错误。另外 `-AtLogOn` 触发器不加 `-User`
+> 会报 Access is denied，要显式指定当前用户。
 
 ## 数据来源
 
@@ -202,6 +240,17 @@ python3 tools/check_theme.py
 深色那一份还会先展开一张卡片、搜一次关键词，把 `成本/收益/备注/来源` 和 `<mark>` 高亮也纳入检查。
 另外会验证主题按钮的循环切换、`localStorage` 写入、以及 `auto` 是否真的跟随系统。
 
+### 自动同步测试
+
+```bash
+python3 tools/check_sync.py
+```
+
+在临时沙箱里把整个仓库复制一份，造一个「有新提交」的假上游（新增 1 条 + 修改 1 条），
+跑完整同步流程后断言 33 项：条数变化、新条目的 7 个字段、原有条目一条没丢、
+未改动条目逐字未变、备份内容等于同步前的 `data.json`、版本号与历史、`index.html` 重建、
+上游快照替换、提交备注内容、工作区干净、幂等、回滚、以及上游不可用时不留下烂摊子。
+
 ### 加载性能检查
 
 ```bash
@@ -213,6 +262,8 @@ python3 tools/check_perf.py
 
 > 绝对毫秒数在这类共享机器上波动很大（同一版本实测能在 198~294ms 之间跳），
 > 所以主判据是「首卡是否早于数据返回」这个次序关系，不是单个数字。
+
+详细的使用与维护说明见 [使用说明.md](使用说明.md)。
 
 ## 许可与署名
 
