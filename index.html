@@ -255,6 +255,7 @@
   }
 </style>
 <style>
+/* ===== feedback.css ===== */
 /* ============================================================
    操作反馈模块（feedback.css）
    ------------------------------------------------------------
@@ -369,6 +370,150 @@ body.fb-busy .fb-progress { display: block; }
 /* ---------- 尊重系统的「减少动态效果」设置 ---------- */
 @media (prefers-reduced-motion: reduce) {
   .fb-toast, .fb-pulse, .fb-pending::after, .fb-progress::after { animation: none !important; }
+}
+
+/* ===== index-view.css ===== */
+/* ============================================================
+   条目索引界面（index-view.css）
+   ------------------------------------------------------------
+   独立的全屏面板，按「章节 → 条目编号」的书序浏览全部条目。
+   解决的问题：正文里有 600 多处「见第 N 条 / 第 N 节第 M 条」的交叉引用，
+   而主列表是按证据等级排的，编号被打散，那些引用等于死文字。
+
+   - 与主样式解耦：只用 .iv-* 命名空间，不覆盖任何现有选择器
+   - 颜色走现有 CSS 变量，自动跟随深浅色
+   - z-index 高于 toast(55) 和顶部进度条(60)
+   ============================================================ */
+
+/* ---------- 页脚工具栏里的入口按钮：追加在现有按钮后面 ---------- */
+.iv-entry { position: relative; }
+
+/* ---------- 全屏面板 ---------- */
+.iv-panel {
+  position: fixed; inset: 0; z-index: 91;
+  display: none; flex-direction: column;
+  background: var(--bg, #f2f8ff); color: var(--ink, #16212e);
+}
+.iv-panel.iv-show { display: flex; }
+
+/* ---------- 头部 ---------- */
+.iv-head {
+  flex: 0 0 auto; padding: 14px 16px 12px;
+  background: var(--surface, #fff);
+  border-bottom: 1px solid var(--line, #dbeafe);
+}
+.iv-head-row { display: flex; align-items: flex-start; gap: 12px; }
+.iv-head-text { flex: 1 1 auto; min-width: 0; }
+.iv-title { margin: 0; font-size: 1.05rem; font-weight: 600; line-height: 1.4; }
+.iv-sub { margin: 3px 0 0; font-size: .8rem; color: var(--ink-2, #4a5b6d); line-height: 1.6; }
+.iv-close {
+  flex: 0 0 auto; padding: 4px 10px;
+  border: 1px solid var(--line, #dbeafe); border-radius: 10px;
+  background: var(--surface, #fff); color: var(--ink-2, #4a5b6d);
+  font: inherit; font-size: .82rem; cursor: pointer;
+}
+.iv-close:hover { background: var(--primary-soft, #e6f2ff); border-color: var(--border-hover, #bcd9f7); }
+.iv-close:focus-visible { outline: 2px solid var(--primary, #2f7fd8); outline-offset: 2px; }
+
+.iv-tools { display: flex; gap: 8px; margin-top: 10px; }
+.iv-input {
+  flex: 1 1 auto; min-width: 0; padding: 9px 12px;
+  font: inherit; font-size: .9rem; color: var(--ink, #16212e);
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #dbeafe); border-radius: 10px; outline: none;
+  -webkit-appearance: none; appearance: none;
+}
+.iv-input::placeholder { color: var(--ink-3, #5c6e84); }
+.iv-input:focus { border-color: var(--primary, #2f7fd8); box-shadow: 0 0 0 3px var(--focus-ring, rgba(47,127,216,.15)); }
+
+/* ---------- 主体 ---------- */
+.iv-body {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 16px 48px;
+}
+.iv-hint {
+  margin: 8px 0 14px; font-size: .8rem; line-height: 1.7;
+  color: var(--ink-2, #4a5b6d);
+}
+.iv-hint b { color: var(--ink, #16212e); }
+.iv-hint code {
+  background: var(--primary-soft, #e6f2ff); color: var(--primary-dark, #1f66b4);
+  padding: 1px 6px; border-radius: 5px; font-size: .78rem;
+}
+
+/* 章节分组 */
+.iv-sec { margin-bottom: 16px; }
+.iv-sec-head {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 8px 0 6px; margin: 0;
+  background: var(--bg, #f2f8ff);
+}
+.iv-sec-title { font-size: .88rem; font-weight: 600; color: var(--primary-dark, #1f66b4); }
+.iv-sec-count { font-size: .74rem; color: var(--ink-3, #5c6e84); }
+
+/* 条目行 */
+.iv-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 10px; margin-bottom: 6px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line-soft, #eaf3fe); border-radius: 10px;
+  cursor: pointer; transition: border-color .15s, box-shadow .15s;
+}
+.iv-item:hover { border-color: var(--border-hover, #bcd9f7); box-shadow: var(--shadow, 0 4px 16px rgba(47,127,216,.08)); }
+.iv-item:focus-visible { outline: 2px solid var(--primary, #2f7fd8); outline-offset: 1px; }
+.iv-item.iv-open { border-color: var(--border-open, #aed4f6); }
+
+/* 编号是这一屏的主角，要一眼能扫到 */
+.iv-no {
+  flex: 0 0 auto; min-width: 46px; text-align: center;
+  padding: 2px 7px; border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: .76rem; font-weight: 700; letter-spacing: .02em;
+  background: var(--primary-soft, #e6f2ff); color: var(--primary-dark, #1f66b4);
+}
+.iv-item.iv-open .iv-no { background: var(--chip-on-bg, #1f66b4); color: var(--chip-on-ink, #fff); }
+.iv-t { flex: 1 1 auto; min-width: 0; font-size: .87rem; line-height: 1.6; }
+.iv-ev {
+  flex: 0 0 auto; padding: 1px 7px; border-radius: 999px;
+  font-size: .72rem; font-weight: 700; line-height: 1.7; white-space: nowrap;
+}
+.iv-ev-A { background: var(--ev-a-bg, #1f66b4); color: var(--ev-a-ink, #fff); }
+.iv-ev-B { background: var(--ev-b-bg, #e6f2ff); color: var(--ev-b-ink, #1f66b4); border: 1px solid var(--ev-b-border, #c7e2fb); }
+.iv-ev-C { background: var(--ev-c-bg, #eef3f9); color: var(--ev-c-ink, #4a5b6d); border: 1px solid var(--ev-c-border, #e2e9f1); }
+
+/* 展开后的详情 */
+.iv-detail { display: none; margin: 8px 0 2px; }
+.iv-item.iv-open .iv-detail { display: block; }
+.iv-detail dl {
+  margin: 0; display: grid; gap: 5px 12px;
+  grid-template-columns: auto minmax(0, 1fr);
+  font-size: .84rem; line-height: 1.7;
+}
+.iv-detail dt { color: var(--ink-2, #4a5b6d); white-space: nowrap; }
+.iv-detail dd { margin: 0; min-width: 0; }
+.iv-detail .iv-src { color: var(--src, #4a5b6d); word-break: break-all; }
+
+/* 命中高亮：和主列表保持同一种视觉 */
+.iv-mark { background: var(--mark-bg, #b6dcff); color: var(--mark-ink, #0f2a45); border-radius: 3px; padding: 0 1px; }
+
+.iv-empty { padding: 40px 8px; text-align: center; color: var(--ink-2, #4a5b6d); font-size: .88rem; }
+
+/* 打开面板时锁住背景滚动，避免滚到后面的主列表 */
+body.iv-locked { overflow: hidden; }
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 560px) {
+  .iv-head { padding: 12px 12px 10px; }
+  .iv-body { padding: 8px 12px 40px; }
+  .iv-detail dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .iv-detail dt { margin-top: 7px; font-weight: 600; color: var(--primary-dark, #1f66b4); }
+  .iv-no { min-width: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-item { transition: none; }
 }
 
 </style>
@@ -897,6 +1042,7 @@ body.fb-busy .fb-progress { display: block; }
 })();
 </script>
 <script>
+/* ===== feedback.js ===== */
 /* ============================================================
    操作反馈模块（feedback.js）
    ------------------------------------------------------------
@@ -1230,6 +1376,409 @@ body.fb-busy .fb-progress { display: block; }
       return Array.prototype.map.call(document.querySelectorAll('.fb-toast'), function (n) {
         return n.textContent;
       });
+    }
+  };
+})();
+
+/* ===== index-view.js ===== */
+/* ============================================================
+   条目索引界面（index-view.js）
+   ------------------------------------------------------------
+   为什么需要它：
+     正文里有 600 多处交叉引用（「见第 4 条」「见第 13 节第 1 条」），
+     但主列表是按证据等级 A→C 排的，章节和编号被打散——
+     第 7 节的 22 条能散落到列表第 107 位和第 620 位，隔着 510 条，
+     用户看到「第 4 条」根本找不到。
+
+   这个模块另起一个全屏界面，按「章节号 → 条目号」的书序浏览，
+   编号醒目、可以直接输 7-4 定位。**完全不碰主列表和它的排序。**
+
+   解耦做法：
+     - 数据只用主逻辑已经暴露的公开接口 window.__htlb.exportText()
+       （它返回「当前正在使用的数据」，导入过的数据也能反映出来），
+       拿不到时退回读页面里的 #dataset 数据块；两个都拿不到就显示空状态。
+     - 入口按钮由本模块自己创建、追加到页脚工具栏，不改模板 HTML。
+     - 移除本文件（或从 assets/ 移走）后页面回到原样，无需改任何现有代码。
+   ============================================================ */
+(function () {
+  'use strict';
+
+  if (window.HTLBIndexView) { return; }
+
+  var RENDER_DEBOUNCE = 100;
+
+  var panel = null;
+  var bodyEl = null;
+  var inputEl = null;
+  var hintCountEl = null;
+  var sections = [];        /* 分组后的书序数据 */
+  var opened = false;
+  var renderTimer = null;
+
+  /* ============================================================
+     一、取数据
+     ============================================================ */
+  function loadRows() {
+    /* 首选：主逻辑暴露的公开接口，返回当前正在使用的数据 */
+    try {
+      if (window.__htlb && typeof window.__htlb.exportText === 'function') {
+        var t = window.__htlb.exportText();
+        if (t) { return JSON.parse(t); }
+      }
+    } catch (e) { /* 落到下一档 */ }
+
+    /* 退路：直接读页面内嵌的数据块（公开 DOM） */
+    try {
+      var el = document.getElementById('dataset');
+      if (el && el.textContent) { return JSON.parse(el.textContent); }
+    } catch (e2) { /* 落到空状态 */ }
+
+    return [];
+  }
+
+  /* 把记录按章节分组，章节按节号升序、节内按条目号升序 —— 也就是原书的顺序 */
+  function buildIndex(rows) {
+    var map = {};
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      var m = /^(\d+)-(\d+)$/.exec(String(r['条目编号'] || ''));
+      var sno = m ? parseInt(m[1], 10) : 999999;
+      var ino = m ? parseInt(m[2], 10) : i;
+      if (!map[sno]) { map[sno] = { no: sno, title: r['所属主题'] || '', items: [] }; }
+      if (!map[sno].title && r['所属主题']) { map[sno].title = r['所属主题']; }
+      map[sno].items.push({ ino: ino, id: String(r['条目编号'] || ''), r: r });
+    }
+    var list = [];
+    for (var k in map) {
+      if (Object.prototype.hasOwnProperty.call(map, k)) { list.push(map[k]); }
+    }
+    list.sort(function (a, b) { return a.no - b.no; });
+    for (var j = 0; j < list.length; j++) {
+      list[j].items.sort(function (a, b) { return a.ino - b.ino; });
+    }
+    return list;
+  }
+
+  /* ============================================================
+     二、筛选：支持输编号，也支持关键词
+     ============================================================ */
+  function filterSections(all, kw) {
+    if (!kw) { return all; }
+
+    /* 纯编号：7 → 整个第 7 节；7-4 / 7 4 / 7–4 → 精确定位一条 */
+    var num = /^(\d+)(?:\s*[-–—.、\s]\s*(\d+))?$/.exec(kw);
+    if (num) {
+      var sno = parseInt(num[1], 10);
+      var want = num[2] ? parseInt(num[2], 10) : null;
+      var out = [];
+      for (var i = 0; i < all.length; i++) {
+        if (all[i].no !== sno) { continue; }
+        if (want === null) {
+          out.push(all[i]);
+        } else {
+          var items = all[i].items.filter(function (it) { return it.ino === want; });
+          if (items.length) { out.push({ no: all[i].no, title: all[i].title, items: items }); }
+        }
+      }
+      return out;
+    }
+
+    /* 关键词：标题 / 内容 / 备注 / 编号 */
+    var q = kw.toLowerCase();
+    var res = [];
+    for (var s = 0; s < all.length; s++) {
+      var keep = [];
+      for (var t = 0; t < all[s].items.length; t++) {
+        var r = all[s].items[t].r;
+        var hay = [r['标题'], r['内容'], r['备注'], all[s].items[t].id]
+          .join('\n').toLowerCase();
+        if (hay.indexOf(q) !== -1) { keep.push(all[s].items[t]); }
+      }
+      if (keep.length) { res.push({ no: all[s].no, title: all[s].title, items: keep }); }
+    }
+    return res;
+  }
+
+  /* ============================================================
+     三、渲染
+     ============================================================ */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) { n.className = cls; }
+    if (text != null) { n.textContent = text; }
+    return n;
+  }
+
+  /* 命中关键词高亮，只用 DOM 节点拼，不走 innerHTML */
+  function fillHighlighted(node, text, kw) {
+    text = text || '';
+    if (!kw) { node.textContent = text; return; }
+    var lower = text.toLowerCase(), q = kw.toLowerCase(), idx = lower.indexOf(q);
+    if (idx === -1) { node.textContent = text; return; }
+    if (idx > 0) { node.appendChild(document.createTextNode(text.slice(0, idx))); }
+    var mk = el('span', 'iv-mark', text.slice(idx, idx + q.length));
+    node.appendChild(mk);
+    if (idx + q.length < text.length) {
+      node.appendChild(document.createTextNode(text.slice(idx + q.length)));
+    }
+  }
+
+  function buildDetail(item) {
+    var r = item.r;
+    var wrap = el('div', 'iv-detail');
+    var dl = el('dl');
+    var fields = [['内容', r['内容'], ''], ['成本', r['成本'], ''], ['收益', r['收益'], ''],
+                  ['备注', r['备注'], ''], ['来源出处', r['来源出处'], 'iv-src']];
+    for (var i = 0; i < fields.length; i++) {
+      if (!fields[i][1]) { continue; }
+      dl.appendChild(el('dt', '', fields[i][0]));
+      dl.appendChild(el('dd', fields[i][2], fields[i][1]));
+    }
+    wrap.appendChild(dl);
+    return wrap;
+  }
+
+  function buildItem(item, kw) {
+    var row = el('div', 'iv-item');
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.dataset.id = item.id;
+
+    /* 编号是这一屏的主角 */
+    row.appendChild(el('span', 'iv-no', item.id));
+
+    var title = el('span', 'iv-t');
+    fillHighlighted(title, item.r['标题'], /^\d/.test(kw || '') ? '' : kw);
+    row.appendChild(title);
+
+    var lv = String(item.r['证据等级'] || 'C');
+    row.appendChild(el('span', 'iv-ev iv-ev-' + lv.charAt(0).toUpperCase(), lv));
+
+    var detail = buildDetail(item);
+    row.appendChild(detail);
+
+    function toggle() {
+      var open = row.classList.contains('iv-open');
+      row.classList.toggle('iv-open', !open);
+    }
+    row.addEventListener('click', function (e) {
+      if (e.target.closest('.iv-detail')) { return; }   /* 详情里允许选中文字 */
+      toggle();
+    });
+    row.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+    return row;
+  }
+
+  function render() {
+    if (!bodyEl) { return; }
+    var kw = (inputEl.value || '').trim();
+    var shown = filterSections(sections, kw);
+
+    var frag = document.createDocumentFragment();
+    var total = 0;
+    for (var i = 0; i < shown.length; i++) {
+      var sec = shown[i];
+      var box = el('section', 'iv-sec');
+      var head = el('h2', 'iv-sec-head');
+      head.appendChild(el('span', 'iv-sec-title', '第 ' + sec.no + ' 节 · ' + (sec.title || '')));
+      head.appendChild(el('span', 'iv-sec-count', sec.items.length + ' 条'));
+      box.appendChild(head);
+      for (var j = 0; j < sec.items.length; j++) {
+        box.appendChild(buildItem(sec.items[j], numSearch(kw) ? '' : kw));
+        total++;
+      }
+      frag.appendChild(box);
+    }
+
+    bodyEl.textContent = '';
+
+    /* 顶部提示：这一屏是干什么的、怎么用 */
+    var hint = el('p', 'iv-hint');
+    hint.appendChild(document.createTextNode('正文里的引用就长这样：'));
+    hint.appendChild(el('code', '', '第 4 条'));
+    hint.appendChild(document.createTextNode('　'));
+    hint.appendChild(el('code', '', '第 13 节第 1 条'));
+    hint.appendChild(document.createTextNode(
+      '。这里按原书顺序（章节号 → 条目号）排列，编号在左边，' +
+      '直接在上面输编号就能定位，比如 '));
+    hint.appendChild(el('code', '', '7-4'));
+    hint.appendChild(document.createTextNode(' 或 '));
+    hint.appendChild(el('code', '', '13'));
+    hint.appendChild(document.createTextNode('。点条目可以展开看全文。'));
+    bodyEl.appendChild(hint);
+
+    if (!total) {
+      bodyEl.appendChild(el('p', 'iv-empty',
+        '没有匹配的条目。输编号（如 7-4）试试，或者换个关键词。'));
+    } else {
+      bodyEl.appendChild(frag);
+    }
+
+    if (hintCountEl) {
+      hintCountEl.textContent = kw
+        ? ('筛选出 ' + total + ' 条 / 共 ' + countAll() + ' 条')
+        : ('共 ' + total + ' 条，分 ' + shown.length + ' 节');
+    }
+  }
+
+  function numSearch(kw) { return /^\d/.test(kw || ''); }
+
+  function countAll() {
+    var n = 0;
+    for (var i = 0; i < sections.length; i++) { n += sections[i].items.length; }
+    return n;
+  }
+
+  function scheduleRender() {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(render, RENDER_DEBOUNCE);
+  }
+
+  /* ============================================================
+     四、面板的建与开关
+     ============================================================ */
+  function ensurePanel() {
+    if (panel && panel.isConnected) { return; }
+
+    panel = el('div', 'iv-panel');
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-label', '条目索引');
+
+    var head = el('div', 'iv-head');
+    var row = el('div', 'iv-head-row');
+    var txt = el('div', 'iv-head-text');
+    txt.appendChild(el('h2', 'iv-title', '条目索引 · 按书序查条目'));
+    hintCountEl = el('p', 'iv-sub', '');
+    txt.appendChild(hintCountEl);
+    row.appendChild(txt);
+
+    var closeBtn = el('button', 'iv-close', '关闭');
+    closeBtn.type = 'button';
+    closeBtn.addEventListener('click', close);
+    row.appendChild(closeBtn);
+    head.appendChild(row);
+
+    var tools = el('div', 'iv-tools');
+    inputEl = el('input', 'iv-input');
+    inputEl.type = 'search';
+    inputEl.setAttribute('placeholder', '输编号（7-4）或关键词，比如 救助站');
+    inputEl.setAttribute('aria-label', '按编号或关键词查找条目');
+    inputEl.addEventListener('input', scheduleRender);
+    tools.appendChild(inputEl);
+    head.appendChild(tools);
+
+    panel.appendChild(head);
+
+    bodyEl = el('div', 'iv-body');
+    panel.appendChild(bodyEl);
+
+    document.body.appendChild(panel);
+  }
+
+  function open() {
+    ensurePanel();
+    sections = buildIndex(loadRows());
+    opened = true;
+    panel.classList.add('iv-show');
+    document.body.classList.add('iv-locked');
+    try { inputEl.value = ''; } catch (e) { /* 忽略 */ }
+    render();
+    try { inputEl.focus(); } catch (e) { /* 忽略 */ }
+  }
+
+  function close() {
+    if (!panel) { return; }
+    opened = false;
+    panel.classList.remove('iv-show');
+    document.body.classList.remove('iv-locked');
+  }
+
+  function isOpen() { return opened; }
+
+  /* ============================================================
+     五、入口按钮：追加到现有页脚工具栏，不改模板
+     ============================================================ */
+  function mountEntry() {
+    var toolbar = document.querySelector('.io');
+    if (!toolbar) { return; }
+    if (document.getElementById('iv-open-btn')) { return; }
+
+    var btn = el('button', 'btn iv-entry', '条目索引');
+    btn.type = 'button';
+    btn.id = 'iv-open-btn';
+    btn.title = '按章节和条目编号浏览（正文里的「见第 N 条」在这里找）';
+    btn.addEventListener('click', open);
+    toolbar.appendChild(btn);
+  }
+
+  /* Esc 关闭：只在面板打开时拦截，不影响页面原有的 Esc 行为 */
+  document.addEventListener('keydown', function (e) {
+    if (!opened) { return; }
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    }
+  }, true);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mountEntry);
+  } else {
+    mountEntry();
+  }
+
+  /* ============================================================
+     六、对外只暴露调试/测试接口，不参与业务
+     ============================================================ */
+  window.HTLBIndexView = {
+    version: '1.0.0',
+    open: open,
+    close: close,
+    isOpen: isOpen,
+    loadRows: loadRows,
+    buildIndex: buildIndex,
+    entryMounted: function () { return !!document.getElementById('iv-open-btn'); },
+    /* 测试辅助 */
+    _query: function (q) { inputEl.value = q; render(); },
+    _sections: function () { return document.querySelectorAll('.iv-sec').length; },
+    _items: function () { return document.querySelectorAll('.iv-item').length; },
+    _ids: function () {
+      return Array.prototype.map.call(document.querySelectorAll('.iv-item'), function (n) {
+        return n.querySelector('.iv-no').textContent;
+      });
+    },
+    _titleOf: function (id) {
+      var rows = document.querySelectorAll('.iv-item');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].dataset.id === id) { return rows[i].querySelector('.iv-t').textContent; }
+      }
+      return null;
+    },
+    _clickItem: function (id) {
+      var rows = document.querySelectorAll('.iv-item');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].dataset.id === id) {
+          rows[i].click();
+          return rows[i].classList.contains('iv-open');
+        }
+      }
+      return null;
+    },
+    _detailOpen: function (id) {
+      var rows = document.querySelectorAll('.iv-item');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].dataset.id === id) {
+          var d = rows[i].querySelector('.iv-detail');
+          return d ? window.getComputedStyle(d).display !== 'none' : false;
+        }
+      }
+      return null;
     }
   };
 })();

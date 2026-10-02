@@ -797,24 +797,32 @@ HTML = r"""<!doctype html>
 """
 
 
-def _inject_feedback(html, root):
-    """把「操作反馈」模块（assets/feedback.css、assets/feedback.js）内联进页面。
+def _inject_assets(html, root):
+    """把 assets/ 下的增量模块（*.css / *.js）内联进页面。
 
-    这是该模块与生成器的**唯一接触点**：只在 </head> 前和 </body> 前各插一段，
-    模板 HTML 里的任何现有内容都不动。想临时停用这个模块，把 main() 里的
-    这一句调用去掉重新生成即可，页面立刻回到原样。
+    这是增量模块与生成器的**唯一接触点**：只在 </head> 前和 </body> 前各插一段，
+    模板 HTML 里的任何现有内容都不动。
+
+    新增一个模块只要把文件丢进 assets/，不用再改这个生成器；想停用某个模块，
+    把对应文件移出 assets/ 再重新生成即可。文件名决定注入顺序。
     """
-    css_path = root / "assets" / "feedback.css"
-    js_path = root / "assets" / "feedback.js"
-    for f in (css_path, js_path):
-        if not f.exists():
-            raise SystemExit(f"缺少操作反馈模块文件：{f}")
-    css = css_path.read_text(encoding="utf-8")
-    js = js_path.read_text(encoding="utf-8")
-    if "</script" in js:
-        raise SystemExit("feedback.js 里出现了 </script，无法安全内联到页面")
-    html = html.replace("</head>", "<style>\n" + css + "\n</style>\n</head>", 1)
-    html = html.replace("</body>", "<script>\n" + js + "\n</script>\n</body>", 1)
+    assets = root / "assets"
+    if not assets.is_dir():
+        return html
+
+    css_parts, js_parts = [], []
+    for f in sorted(assets.glob("*.css")):
+        css_parts.append("/* ===== " + f.name + " ===== */\n" + f.read_text(encoding="utf-8"))
+    for f in sorted(assets.glob("*.js")):
+        code = f.read_text(encoding="utf-8")
+        if "</script" in code:
+            raise SystemExit(f"{f.name} 里出现了 </script，无法安全内联到页面")
+        js_parts.append("/* ===== " + f.name + " ===== */\n" + code)
+
+    if css_parts:
+        html = html.replace("</head>", "<style>\n" + "\n".join(css_parts) + "\n</style>\n</head>", 1)
+    if js_parts:
+        html = html.replace("</body>", "<script>\n" + "\n".join(js_parts) + "\n</script>\n</body>", 1)
     return html
 
 
@@ -827,8 +835,8 @@ def main():
 
     html = HTML.replace("__DATA__", payload).replace("__TOTAL__", str(len(data)))
 
-    # 增量模块：操作反馈（解耦，可通过去掉这一行回退）
-    html = _inject_feedback(html, root)
+    # 增量模块：assets/ 下所有独立模块（解耦，移走文件即可回退）
+    html = _inject_assets(html, root)
 
     out = root / "index.html"
     out.write_text(html, encoding="utf-8")

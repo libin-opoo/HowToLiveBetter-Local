@@ -81,6 +81,9 @@ function blend(fg, bg) {
            g: fg.g * fg.a + bg.g * (1 - fg.a),
            b: fg.b * fg.a + bg.b * (1 - fg.a), a: 1 };
 }
+/* 向上找第一个不透明背景。
+   注意：认不出来时必须返回 null，**不能猜白底**——
+   否则深色文字配上猜出来的白底，会报出 1.71:1 这种根本不存在的假失败。 */
 function bgOf(el, win) {
   var node = el;
   while (node && node.nodeType === 1) {
@@ -88,11 +91,11 @@ function bgOf(el, win) {
     if (c && c.a > 0.9) { return c; }
     node = node.parentElement;
   }
-  return { r: 255, g: 255, b: 255, a: 1 };
+  return null;
 }
 
 function contrastScan() {
-  var bad = [], seen = {}, checked = 0;
+  var bad = [], seen = {}, checked = 0, unmeasured = 0;
   var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
   var n;
   while ((n = walker.nextNode())) {
@@ -100,6 +103,8 @@ function contrastScan() {
     if (!text) { continue; }
     var el = n.parentElement;
     if (!el) { continue; }
+    /* 脱离文档的节点（渲染中途被替换掉的）量不出真实背景，直接跳过 */
+    if (el.isConnected === false) { unmeasured++; continue; }
     var cs = window.getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) { continue; }
     var box = el.getBoundingClientRect();
@@ -108,6 +113,7 @@ function contrastScan() {
     if (full && window.getComputedStyle(full).display === 'none') { continue; }
 
     var bg = bgOf(el, window);
+    if (!bg) { unmeasured++; continue; }   /* 背景量不到就不下结论，不猜 */
     var fg = blend(parseColor(cs.color), bg);
     var cr = ratio(fg, bg);
     var size = parseFloat(cs.fontSize);
@@ -141,7 +147,9 @@ function contrastScan() {
       if (!content || content === 'none' || content === 'normal' ||
           content === '""' || content === "''") { return; }
       if (ps.display === 'none' || ps.visibility === 'hidden') { return; }
+      if (host.isConnected === false) { return; }
       var bg = bgOf(host, window);
+      if (!bg) { return; }                    /* 同样不猜 */
       var fg = blend(parseColor(ps.color), bg);
       var cr = ratio(fg, bg);
       var size = parseFloat(ps.fontSize);
@@ -160,7 +168,7 @@ function contrastScan() {
       }
     });
   }
-  return { bad: bad, checked: checked };
+  return { bad: bad, checked: checked, unmeasured: unmeasured };
 }
 
 (async function () {
@@ -226,10 +234,22 @@ function contrastScan() {
     await sleep(250);
   }
 
+  /* 装了「条目索引」模块时，打开面板并展开一条，让新界面的文字也参与对比度检查。
+     同样用特性检测包起来，模块没装时不影响原有检查。 */
+  if (window.HTLBIndexView && window.HTLBIndexView.open) {
+    window.HTLBIndexView.open();
+    await sleep(300);
+    window.HTLBIndexView._query('7');      /* 只留一节，够覆盖所有样式又不拖慢扫描 */
+    await sleep(300);
+    window.HTLBIndexView._clickItem('7-4');
+    await sleep(250);
+  }
+
   var scan = contrastScan();
   check('所有文字对比度达标', scan.bad.length === 0,
         scan.bad.length === 0
-          ? ('扫描 ' + scan.checked + ' 处文字，全部 ≥ 标准')
+          ? ('扫描 ' + scan.checked + ' 处文字，全部 ≥ 标准' +
+             (scan.unmeasured ? '（另有 ' + scan.unmeasured + ' 处背景量不到，已跳过）' : ''))
           : scan.bad.map(function (b) {
               return b.cls + ' 文字"' + b.text + '" ' + b.color + ' on ' + b.bg +
                      ' = ' + b.ratio + ':1 (需要 ' + b.need + ')';
