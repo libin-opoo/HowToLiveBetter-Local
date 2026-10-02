@@ -40,10 +40,11 @@ var f = document.getElementById('f');
   try { doc = f.contentDocument; win = f.contentWindow; }
   catch (e) { check('iframe 可访问', false, e); report(); return; }
 
-  for (var i = 0; i < 300 && doc.querySelectorAll('.card').length === 0; i++) {
-    await sleep(50);
+  for (var i = 0; i < 400 && doc.querySelectorAll('.card').length < 650; i++) {
+    await sleep(40);
     doc = f.contentDocument; win = f.contentWindow;
   }
+  await stableCount();
 
   var cards = function () { return Array.prototype.slice.call(doc.querySelectorAll('.card')); };
   var titles = function () {
@@ -67,13 +68,37 @@ var f = document.getElementById('f');
     }
     return true;
   }
-  function setSearch(v) {
+  /* 卡片是分片渲染的，固定 sleep 会读到中间态（实测读到过 164 = 24+140）。
+     这里等数量连续两次不变再断言。 */
+  async function stableCount() {
+    var last = -1, stable = 0, n;
+    for (var i = 0; i < 250; i++) {
+      n = doc.querySelectorAll('.card').length;
+      if (n === last) { stable++; if (stable >= 2) { return n; } } else { stable = 0; }
+      last = n;
+      await sleep(40);
+    }
+    return doc.querySelectorAll('.card').length;
+  }
+
+  /* 搜索有 120ms 防抖：必须越过防抖再等分片渲染，否则读到的是改动前的旧结果 */
+  async function setSearch(v) {
     var q = doc.getElementById('q');
     q.value = v;
     q.dispatchEvent(new win.Event('input', { bubbles: true }));
+    await sleep(260);
+    return await stableCount();
   }
-  function tap(cat) {
+  async function tap(cat) {
     doc.querySelector('.chip[data-cat="' + cat + '"]').click();
+    return await stableCount();
+  }
+  /* 把搜索和分类都恢复成「什么都没选」，避免用例之间互相污染 */
+  async function resetFilters() {
+    await setSearch('');
+    var on = doc.querySelector('.chip[aria-pressed="true"]');
+    if (on) { await tap(on.dataset.cat); }
+    return await stableCount();
   }
   var q = doc.getElementById('q');
 
@@ -87,8 +112,7 @@ var f = document.getElementById('f');
   check('A 级排在最前', levels()[0].charAt(0) === 'A', firstLevels);
 
   /* ---- 2. 单关键词搜索 ---- */
-  setSearch('血压');
-  await sleep(320);
+  await setSearch('血压');
   var n = cards().length;
   var bpCount = n;                      /* 「血压」单关键词命中数，后面复用，避免写死 */
   check('搜索“血压”有结果', n > 0, n + ' 条');
@@ -100,13 +124,11 @@ var f = document.getElementById('f');
         doc.querySelectorAll('.card mark').length + ' 处');
 
   /* ---- 3. 搜索范围只限标题/内容/主题 ---- */
-  setSearch('Cochrane');            /* 只出现在「来源出处」里 */
-  await sleep(320);
+  await setSearch('Cochrane');      /* 只出现在「来源出处」里 */
   check('来源/备注里的词不再命中(范围收窄)', cards().length === 0, cards().length + ' 条');
 
   /* ---- 4. 多关键词 AND ---- */
-  setSearch('血压 筛查');
-  await sleep(320);
+  await setSearch('血压 筛查');
   n = cards().length;
   check('多关键词取交集', n > 0 && n < bpCount,
         n + ' 条（“血压”单搜为 ' + bpCount + ' 条）');
@@ -116,13 +138,11 @@ var f = document.getElementById('f');
   check('多关键词结果同时含两个词', bad.length === 0, bad.length + ' 条不满足');
 
   /* ---- 5. 清空搜索 ---- */
-  setSearch('');
-  await sleep(320);
+  await setSearch('');
   check('清空搜索恢复全部', cards().length === 650, cards().length);
 
   /* ---- 6. 分类筛选 ---- */
-  tap('健康');
-  await sleep(200);
+  await tap('健康');
   n = cards().length;
   check('点“健康”筛选生效', n === 327, n + ' 条');
   check('分类筛选结果按证据等级排序', sortedOK(levels()) === true, sortedOK(levels()));
@@ -133,33 +153,64 @@ var f = document.getElementById('f');
         doc.getElementById('status').textContent.trim());
 
   /* ---- 7. 再次点击取消 ---- */
-  tap('健康');
-  await sleep(200);
+  await tap('健康');
   check('再点一次取消筛选', cards().length === 650, cards().length);
   check('取消后按钮复原',
         doc.querySelector('.chip[data-cat="健康"]').getAttribute('aria-pressed') === 'false', '');
 
   /* ---- 8. 搜索 + 分类 组合 ---- */
-  tap('健康');
-  await sleep(150);
-  setSearch('血压');
-  await sleep(320);
+  await tap('健康');
+  await setSearch('血压');
   var combo = cards().length;
   check('搜索与分类可叠加', combo > 0 && combo <= bpCount, combo + ' 条');
   check('组合结果仍按证据等级排序', sortedOK(levels()) === true, sortedOK(levels()));
 
   /* ---- 9. 空结果 ---- */
-  setSearch('zzzz不存在的词zzzz');
-  await sleep(320);
+  await setSearch('zzzz不存在的词zzzz');
   check('无结果时卡片清空', cards().length === 0, cards().length);
   check('无结果时给出提示', !!doc.querySelector('.empty'),
         doc.querySelector('.empty') ? doc.querySelector('.empty').textContent.trim() : '无提示');
 
-  /* ---- 10. 全部复位 ---- */
-  setSearch('');
-  await sleep(320);
-  tap('健康');
-  await sleep(250);
+  /* ---- 10. 快捷键 ---- */
+  function press(key, opts) {
+    var ev = new win.KeyboardEvent('keydown', Object.assign(
+      { key: key, bubbles: true, cancelable: true }, opts || {}));
+    doc.dispatchEvent(ev);
+    return ev;
+  }
+  await resetFilters();
+  if (doc.activeElement && doc.activeElement.blur) { doc.activeElement.blur(); }
+  press('k', { ctrlKey: true });
+  check('Ctrl+K 聚焦搜索框', doc.activeElement === q,
+        doc.activeElement ? (doc.activeElement.id || doc.activeElement.tagName) : 'null');
+  press('k', { metaKey: true });
+  check('Cmd+K 也聚焦搜索框', doc.activeElement === q,
+        doc.activeElement ? (doc.activeElement.id || doc.activeElement.tagName) : 'null');
+  if (doc.activeElement && doc.activeElement.blur) { doc.activeElement.blur(); }
+  var plainK = press('k', {});
+  check('单按 K 不触发（不劫持普通输入）', doc.activeElement !== q && !plainK.defaultPrevented,
+        'activeElement=' + (doc.activeElement ? (doc.activeElement.id || doc.activeElement.tagName) : 'null'));
+
+  await resetFilters();
+  await setSearch('血压');
+  var beforeEsc = cards().length;
+  press('Escape');
+  await sleep(80);
+  await stableCount();
+  check('Esc 清空搜索内容', q.value === '' && cards().length === 650,
+        '输入框="' + q.value + '"，卡片 ' + beforeEsc + ' → ' + cards().length);
+
+  await tap('健康');
+  press('Escape');
+  await sleep(80);
+  await stableCount();
+  check('搜索为空时 Esc 取消分类筛选',
+        cards().length === 650 &&
+        doc.querySelector('.chip[data-cat="健康"]').getAttribute('aria-pressed') === 'false',
+        '卡片 ' + cards().length);
+
+  /* ---- 11. 全部复位 ---- */
+  await resetFilters();
   check('复位后回到 650 条', cards().length === 650, cards().length);
 
   report();

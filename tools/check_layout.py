@@ -38,12 +38,16 @@ function report(obj) {
   document.body.appendChild(d);
 }
 var f = document.getElementById('f');
-var tries = 0;
+var tries = 0, lastN = -1, stable = 0;
+/* 卡片分片渲染，等数量稳定下来再测量，否则只会扫到首屏那几张 */
 function waitCards(cb) {
   var doc;
   try { doc = f.contentDocument; }
   catch (e) { report({ error: '无法访问 iframe（需要 --allow-file-access-from-files）: ' + e }); return; }
-  if ((doc && doc.querySelectorAll('.card').length > 0) || tries++ > 300) { cb(); return; }
+  var n = doc ? doc.querySelectorAll('.card').length : 0;
+  if (n === lastN && n > 0) { stable++; } else { stable = 0; }
+  lastN = n;
+  if (stable >= 3 || tries++ > 600) { cb(); return; }
   setTimeout(function () { waitCards(cb); }, 40);
 }
 waitCards(function () {

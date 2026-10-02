@@ -104,7 +104,7 @@ async function feed(win, doc, text, name) {
 
 (async function () {
  try {
-  var doc = await waitCards(getDoc(), 1);
+  var doc = await waitCards(getDoc(), 650);   /* 分片渲染，要等到齐 */
   if (!doc) { check('页面可访问', false, 'iframe 读不到'); report(); return; }
   var win = f.contentWindow;
   var n0 = doc.querySelectorAll('.card').length;
@@ -204,7 +204,7 @@ async function feed(win, doc, text, name) {
   var doc2 = null;
   await waitUntil(function () {
     try { doc2 = f2.contentDocument; } catch (e3) { doc2 = null; }
-    return doc2 && doc2.querySelectorAll('.card').length > 0;
+    return doc2 && doc2.querySelectorAll('.card').length === 2;
   }, 300);
   var n2 = doc2 ? doc2.querySelectorAll('.card').length : -1;
   check('重新打开页面后仍是导入的数据', n2 === 2, n2 + ' 条');

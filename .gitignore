@@ -5,3 +5,5 @@ Thumbs.db
 .layout-probe.html
 .search-probe.html
 .io-probe.html
+.theme-probe-*.html
+.perf-probe.html
