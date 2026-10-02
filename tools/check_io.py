@@ -166,7 +166,10 @@ async function feed(win, doc, text, name) {
         doc.getElementById('reset-btn').hidden === false, '');
   var titles2 = Array.prototype.map.call(doc.querySelectorAll('.card-title'),
                                           function (t) { return t.textContent; });
-  check('导入后按证据等级排序(A 在前)', titles2[0] === '测试条目二', titles2.join(' / '));
+  /* 主列表默认排序已改为「书序」；这两条测试数据没有 条目编号，
+     所以书序下保持原顺序。证据等级排序本身由 tools/check_search.py 覆盖。 */
+  check('导入后按当前排序展示（默认书序，无编号则保持原顺序）',
+        titles2[0] === '测试条目一' && titles2.length === 2, titles2.join(' / '));
 
   /* ---- 4. 导入后导出的是新数据 ---- */
   var exported2 = (await captureExport(win, doc)).text;

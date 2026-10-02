@@ -60,6 +60,37 @@ var f = document.getElementById('f');
              c.querySelector('.theme').textContent;
     });
   };
+  var cardNos = function () {
+    return cards().map(function (c) {
+      var n = c.querySelector('.card-no');
+      return n ? n.textContent : '';
+    });
+  };
+  /* 书序 = 条目编号的「章节号 → 条目号」单调不减 */
+  function bookOrderOK(ids) {
+    var prev = null;
+    for (var i = 0; i < ids.length; i++) {
+      var m = /^(\d+)-(\d+)$/.exec(ids[i]);
+      if (!m) { return '第 ' + (i + 1) + ' 项没有编号：' + ids[i]; }
+      var cur = [parseInt(m[1], 10), parseInt(m[2], 10)];
+      if (prev && (cur[0] < prev[0] || (cur[0] === prev[0] && cur[1] < prev[1]))) {
+        return '第 ' + (i + 1) + ' 项 ' + ids[i] + ' 排在 ' + ids[i - 1] + ' 后面';
+      }
+      prev = cur;
+    }
+    return true;
+  }
+  /* 当前排序模式：状态栏按钮上写着 */
+  function sortMode() {
+    var b = doc.querySelector('.status-sort');
+    return b && b.textContent.indexOf('证据等级') !== -1 ? 'evidence' : 'book';
+  }
+  async function toggleSort() {
+    var b = doc.querySelector('.status-sort');
+    if (b) { b.click(); }
+    return await stableCount();
+  }
+
   function sortedOK(lv) {
     var rank = { A: 0, B: 1, C: 2 };
     for (var i = 1; i < lv.length; i++) {
@@ -104,12 +135,12 @@ var f = document.getElementById('f');
 
   /* ---- 1. 默认状态 ---- */
   check('默认展示全部 650 条', cards().length === 650, cards().length);
-  check('默认按证据等级排序', sortedOK(levels()) === true, sortedOK(levels()));
-  check('状态栏标注排序规则',
-        doc.getElementById('status').textContent.indexOf('按证据等级') !== -1,
-        doc.getElementById('status').textContent.trim());
-  var firstLevels = levels().slice(0, 5).join(',');
-  check('A 级排在最前', levels()[0].charAt(0) === 'A', firstLevels);
+  check('默认按书序排列（章节号→条目号）', bookOrderOK(cardNos()) === true, bookOrderOK(cardNos()));
+  check('卡片显示自己的条目编号', cardNos()[0] === '1-1', cardNos().slice(0, 3).join(', '));
+  check('状态栏有排序切换按钮并显示当前排序',
+        !!doc.querySelector('.status-sort') && /排序：/.test(doc.querySelector('.status-sort').textContent),
+        doc.querySelector('.status-sort') ? doc.querySelector('.status-sort').textContent : '没有按钮');
+  check('默认排序模式为书序', sortMode() === 'book', sortMode());
 
   /* ---- 2. 单关键词搜索 ---- */
   await setSearch('血压');
@@ -119,7 +150,7 @@ var f = document.getElementById('f');
   var miss = texts().filter(function (t) { return t.indexOf('血压') === -1; });
   check('命中项都包含关键词(标题/内容/主题)', miss.length === 0,
         miss.length ? '有 ' + miss.length + ' 条不含关键词：' + miss[0].split('\n')[0] : '全部命中');
-  check('搜索结果按证据等级排序', sortedOK(levels()) === true, sortedOK(levels()));
+  check('搜索结果跟随当前排序（书序）', bookOrderOK(cardNos()) === true, bookOrderOK(cardNos()));
   check('关键词被高亮(<mark>)', doc.querySelectorAll('.card mark').length > 0,
         doc.querySelectorAll('.card mark').length + ' 处');
 
@@ -145,7 +176,7 @@ var f = document.getElementById('f');
   await tap('健康');
   n = cards().length;
   check('点“健康”筛选生效', n === 327, n + ' 条');
-  check('分类筛选结果按证据等级排序', sortedOK(levels()) === true, sortedOK(levels()));
+  check('分类筛选结果跟随当前排序（书序）', bookOrderOK(cardNos()) === true, bookOrderOK(cardNos()));
   check('“健康”按钮呈选中态',
         doc.querySelector('.chip[data-cat="健康"]').getAttribute('aria-pressed') === 'true', '');
   check('分类状态栏显示命中数',
@@ -163,7 +194,7 @@ var f = document.getElementById('f');
   await setSearch('血压');
   var combo = cards().length;
   check('搜索与分类可叠加', combo > 0 && combo <= bpCount, combo + ' 条');
-  check('组合结果仍按证据等级排序', sortedOK(levels()) === true, sortedOK(levels()));
+  check('组合结果仍跟随当前排序（书序）', bookOrderOK(cardNos()) === true, bookOrderOK(cardNos()));
 
   /* ---- 9. 空结果 ---- */
   await setSearch('zzzz不存在的词zzzz');
@@ -209,7 +240,32 @@ var f = document.getElementById('f');
         doc.querySelector('.chip[data-cat="健康"]').getAttribute('aria-pressed') === 'false',
         '卡片 ' + cards().length);
 
-  /* ---- 11. 全部复位 ---- */
+  /* ---- 11. 排序切换 ---- */
+  await resetFilters();
+  await toggleSort();
+  check('点按钮切到证据等级排序', sortMode() === 'evidence', sortMode());
+  check('切到证据等级后 A 级排在最前', levels()[0].charAt(0) === 'A',
+        levels().slice(0, 5).join(','));
+  check('证据等级排序整体单调不减', sortedOK(levels()) === true, sortedOK(levels()));
+  check('切换后选择写入了 localStorage', (function () {
+    try { return localStorage.getItem('htlb.sort') === 'evidence'; }
+    catch (e) { return false; }
+  })(), (function () { try { return String(localStorage.getItem('htlb.sort')); } catch (e) { return '读不到'; } })());
+
+  /* 证据等级模式下搜索，结果也要按证据等级排 */
+  await setSearch('血压');
+  check('证据等级模式下搜索结果仍按证据等级排', sortedOK(levels()) === true, sortedOK(levels()));
+  await resetFilters();
+
+  /* 再点一次切回书序 */
+  await toggleSort();
+  check('再点一次切回书序', sortMode() === 'book', sortMode());
+  check('切回书序后编号重新有序', bookOrderOK(cardNos()) === true, bookOrderOK(cardNos()));
+  check('切回书序后 A 级不再强制在最前（说明真的换了排序）',
+        levels().slice(0, 40).indexOf('C') !== -1 || levels()[0].charAt(0) !== 'A',
+        levels().slice(0, 8).join(','));
+
+  /* ---- 12. 全部复位 ---- */
   await resetFilters();
   check('复位后回到 650 条', cards().length === 650, cards().length);
 

@@ -169,7 +169,24 @@ HTML = r"""<!doctype html>
     display:flex;gap:8px 14px;flex-wrap:wrap;justify-content:space-between;
   }
   .status b{color:var(--primary-dark)}
-  .status-sort{white-space:nowrap;color:var(--ink-3)}
+  /* 排序切换：原来是纯文字，现在做成可点的按钮 */
+  .status-sort{
+    white-space:nowrap;color:var(--ink-3);
+    background:none;border:0;padding:0;
+    font:inherit;font-size:inherit;line-height:inherit;
+    cursor:pointer;text-decoration:underline dotted;
+    text-underline-offset:3px;
+  }
+  .status-sort:hover{color:var(--primary-dark)}
+  .status-sort:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+  /* 卡片上的条目编号：正文里的「见第 N 条」靠它对照 */
+  .card-no{
+    flex:0 0 auto;padding:1px 7px;border-radius:6px;
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:.72rem;font-weight:700;line-height:1.7;letter-spacing:.02em;
+    background:var(--primary-soft);color:var(--primary-dark);white-space:nowrap;
+  }
 
   /* ---------- 卡片列表 ---------- */
   .cards{display:grid;gap:12px;grid-template-columns:1fr;align-items:start}
@@ -350,7 +367,16 @@ HTML = r"""<!doctype html>
   var modeEl = document.getElementById('mode');
 
   var DATA = EMBEDDED;
-  var state = { q: '', cat: '' };
+  /* 排序模式：book = 原书顺序（章节号 → 条目号），evidence = 证据等级 A→C。
+     默认书序 —— 这样正文里「见第 4 条」能顺着往下数到。 */
+  var SORT_KEY = 'htlb.sort';
+  function readSortMode() {
+    try {
+      var v = localStorage.getItem(SORT_KEY);
+      return (v === 'book' || v === 'evidence') ? v : 'book';
+    } catch (e) { return 'book'; }
+  }
+  var state = { q: '', cat: '', sort: readSortMode() };
   var debounceTimer = null;
 
   function el(tag, cls, text) {
@@ -393,6 +419,38 @@ HTML = r"""<!doctype html>
     var k = (level || 'C').trim().charAt(0).toUpperCase();
     return EV_RANK[k] == null ? 3 : EV_RANK[k];
   }
+  /* 书序：按条目编号的「章节号 → 条目号」排，也就是原书的顺序。
+     编号形如 7-21，解析不出来的一律排到最后。 */
+  function bookKey(r) {
+    var m = /^(\d+)-(\d+)$/.exec(String(r['条目编号'] || ''));
+    return m ? [parseInt(m[1], 10), parseInt(m[2], 10)] : [999999, 0];
+  }
+  function sortByBook(rows) {
+    return rows
+      .map(function (r, i) { return { r: r, i: i }; })
+      .sort(function (a, b) {
+        var ka = bookKey(a.r), kb = bookKey(b.r);
+        if (ka[0] !== kb[0]) { return ka[0] - kb[0]; }
+        if (ka[1] !== kb[1]) { return ka[1] - kb[1]; }
+        return a.i - b.i;
+      })
+      .map(function (x) { return x.r; });
+  }
+
+  function sortRows(rows) {
+    return state.sort === 'evidence' ? sortByEvidence(rows) : sortByBook(rows);
+  }
+
+  function sortLabel() {
+    return state.sort === 'evidence' ? '证据等级 A→C' : '书序（章节·条目）';
+  }
+
+  function setSortMode(mode) {
+    state.sort = (mode === 'evidence') ? 'evidence' : 'book';
+    try { localStorage.setItem(SORT_KEY, state.sort); } catch (e) { /* 忽略 */ }
+    render();
+  }
+
   function sortByEvidence(rows) {
     return rows
       .map(function (r, i) { return { r: r, i: i }; })
@@ -460,6 +518,7 @@ HTML = r"""<!doctype html>
     card.setAttribute('aria-expanded', 'false');
 
     var head = el('div', 'card-head');
+    if (r['条目编号']) { head.appendChild(el('span', 'card-no', r['条目编号'])); }
     var h2 = el('h2', 'card-title');
     setText(h2, r['标题'], ts);
     head.appendChild(h2);
@@ -574,7 +633,7 @@ HTML = r"""<!doctype html>
      而首屏并没有真的提前（244ms vs 253ms）。一次布局比多次便宜得多。 */
   function render() {
     var ts = terms();
-    var rows = sortByEvidence(filterData(ts));
+    var rows = sortRows(filterData(ts));
 
     var frag = document.createDocumentFragment();
     for (var i = 0; i < rows.length; i++) { frag.appendChild(makeCard(rows[i], ts)); }
@@ -593,7 +652,8 @@ HTML = r"""<!doctype html>
       ? desc.join(' · ') + ' 命中 ' + rows.length + ' 条 / 共 ' + DATA.length + ' 条'
       : '共 ' + rows.length + ' 条';
     statusEl.innerHTML = '<span class="status-main">' + main + '</span>' +
-      '<span class="status-sort">按证据等级 A→C 排序</span>';
+      '<button type="button" class="status-sort" id="sort-toggle"' +
+      ' title="点击切换：书序 / 证据等级排序">排序：' + sortLabel() + ' ⇄</button>';
   }
 
   function escapeHtml(s) {
@@ -610,6 +670,14 @@ HTML = r"""<!doctype html>
     }
     render();
   }
+
+  /* 排序切换按钮每次 render 都会重建，所以用事件委托，只绑一次 */
+  statusEl.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && t.closest && t.closest('.status-sort')) {
+      setSortMode(state.sort === 'book' ? 'evidence' : 'book');
+    }
+  });
 
   catsEl.addEventListener('click', function (e) {
     var chip = e.target.closest('.chip');
