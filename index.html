@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>高性价比人生指南 · 前 10 条</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1rem 4rem;
+         font: 16px/1.7 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif; }
+  h1 { font-size: 1.35rem; margin: 0 0 .25rem; }
+  .meta { color: #6b7280; font-size: .85rem; margin: 0 0 1.25rem; }
+  .mode { display: inline-block; padding: .1rem .5rem; border-radius: .5rem;
+          font-size: .78rem; background: #eef2f7; color: #374151; }
+  @media (prefers-color-scheme: dark) { .mode { background:#2a2f38; color:#cbd5e1; } }
+  ol { padding-left: 1.4rem; }
+  li { margin: 0 0 1.4rem; padding-left: .2rem; }
+  .title { font-weight: 600; }
+  .tag { font-size: .78rem; color: #6b7280; margin-left: .4rem; }
+  .ev { font-weight: 600; }
+  dl { margin: .45rem 0 0; display: grid; grid-template-columns: 5.5rem 1fr;
+       gap: .2rem .6rem; font-size: .92rem; }
+  dt { color: #6b7280; }
+  dd { margin: 0; }
+  .src { font-size: .82rem; color: #6b7280; word-break: break-all; }
+</style>
+</head>
+<body>
+<h1>高性价比人生指南 · 前 10 条</h1>
+<p class="meta">
+  数据来源 <code>data.json</code> · 共 <span id="total">-</span> 条，此处只显示前 10 条 ·
+  <span class="mode" id="mode">加载中</span>
+</p>
+<ol id="list"></ol>
+
+<script id="fallback" type="application/json">[{"标题": "系安全带，前排后排都系", "内容": "坐前排系上安全带，出车祸时被撞死的概率大约降一半。坐轻型卡车前排的降六成。美国 2022 年死在车里的人，能查到系没系带的，有一半没系。", "所属主题": "不要早死", "成本": "不花钱。每次上车多花 2 秒。", "收益": "美国交通安全主管部门（NHTSA）估计，系安全带能让轿车前排乘员受致命伤的风险下降 45%。轻型卡车前排下降 60%。2022 年美国死在乘用车（载人的小汽车）里的人当中，能查到系没系带的，有 50% 没系。世界卫生组织（WHO）的口径是，安全带让车内人员的死亡风险最多降低 50%。WHO 估计中国 2021 年死于道路交通事故的有 248,099 人，相当于每 10 万人里死 17.4 人", "证据等级": "A", "来源出处": "NHTSA (2024). Occupant Protection in Passenger Vehicles: 2022 Data (DOT HS 813 573). \u003chttps://crashstats.nhtsa.dot.gov/Api/Public/ViewPublication/813573> ; WHO (2025). Road traffic injuries fact sheet. \u003chttps://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries> ; WHO GHO RS_196/RS_198 (China, 2021). \u003chttps://ghoapi.azureedge.net/api/RS_196?$filter=SpatialDim%20eq%20%27CHN%27>", "备注": "后排也要系。同一份报告里，第二排被撞死的人有 60% 没系带。45%、60% 这两个数，是美国交通安全主管部门（NHTSA）拿事故数据库算出来的估计（引 Kahane 2015），不是随机分组的试验。WHO 那个中国死亡人数是推算出来的，比公安交管登记的数字高好几倍。两边统计的范围不一样，这里只用 WHO 的口径。", "源文件": "book/01-不要早死.md", "条目编号": "1-1"}, {"标题": "骑摩托车、电动自行车戴头盔并扣好", "内容": "戴头盔并且把扣带扣好，摩托车骑手出事时死亡的概率低约四成。头部受伤低约七成。扣带要系紧，松松垮垮挂在头上不算戴。", "所属主题": "不要早死", "成本": "买一顶 100 到 300 元。每次戴上花 5 秒。", "收益": "Cochrane 把多项研究合起来一起算。摩托车骑行者戴头盔，死亡风险下降 42%。原值 OR 0.58，可信范围 95% CI 0.50 到 0.68。头部损伤下降 69%（OR 0.31，95% CI 0.25 到 0.38）", "证据等级": "A", "来源出处": "Liu BC 等 (2008). Helmets for preventing injury in motorcycle riders. Cochrane Database of Systematic Reviews. \u003chttps://doi.org/10.1002/14651858.CD004333.pub3>", "备注": "头盔要把扣带扣好，挂在车把上不算戴。上面的数据来自摩托车。电动自行车没有直接研究，是照着推过来的，因为撞上以后头部受伤的方式相同。", "源文件": "book/01-不要早死.md", "条目编号": "1-2"}, {"标题": "装烟雾报警器；冬天在室内烧煤、用燃气取暖的再装一氧化碳报警器", "内容": "一个能正常工作的烟雾报警器，能把住宅火灾里死亡的概率降约六成。起火时有四成人在睡觉，光靠鼻子是醒不过来的。冬天在屋里烧煤或用燃气的，再加一个一氧化碳报警器。中国 2018 年有 1.15 万人死于一氧化碳中毒，冬天那三个月七成死在家里。", "所属主题": "不要早死", "成本": "烟雾报警器一个 30 到 100 元。一氧化碳报警器一个 50 到 150 元。装好以后每年换一次电池。", "收益": "美国北卡罗来纳州研究了一批住宅火灾，回头比对出事和没出事的家庭。家里有一个能正常工作的烟雾报警器，死亡风险下降约六成。原值 OR 0.39，可信范围 95% CI 0.18 到 0.83。美国 2018 到 2020 年，有人住的住宅里发生的致死火灾，24% 家里没有烟雾报警器，41% 起火时人在睡觉。中国 2018 年报告一氧化碳中毒死亡 11,523 例。这些死亡里，12 月有 72.59%、1 月有 67.42%、2 月有 66.48% 发生在家中", "证据等级": "B", "来源出处": "Marshall SW 等 (1998). Fatal residential fires: who dies and who survives? JAMA. \u003chttps://doi.org/10.1001/jama.279.20.1633> ; USFA (2022). Fatal Fires in Residential Buildings (2018-2020), Topical Fire Report Series 22(2). \u003chttps://www.usfa.fema.gov/downloads/pdf/statistics/v22i2.pdf> ; You J 等 (2020). Number of Deaths due to Carbon Monoxide Poisoning by Month and by Place of Death — China, 2018. China CDC Weekly. \u003chttps://doi.org/10.46234/ccdcw2020.008>", "备注": "给 B 的原因：烟雾报警器这边只有一项研究，做法是回头比对出事和没出事的家庭，不是随机分组的试验。一氧化碳报警器本身没有降低死亡率的研究。这里的收益是按「中毒死亡集中在冬季、集中在家中」推出来的。", "源文件": "book/01-不要早死.md", "条目编号": "1-3"}, {"标题": "燃气软管和灶具到期就换，不自己改管道，燃气公司上门推销可以直接拒绝", "内容": "一根合规软管几十块。到期就换，这是《城镇燃气管理条例》写明的用户义务。自己改管道、拆燃气表是条例明令禁止的。同一部条例还写了，燃气公司不能要求你买它指定的产品和服务。上门说「必须换」的推销，可以直接拒绝。", "所属主题": "不要早死", "成本": "一根合规的燃气软管几十元。灶具几年换一次。换的时候顺手看一眼有没有过期。", "收益": "条例把「及时更换国家明令淘汰或者使用年限已届满的燃气燃烧器具、连接管」写成了用户的义务：灶具和软管到了年限或者被国家淘汰了，你就要换。条例还把「擅自安装、改装、拆除户内燃气设施和燃气计量装置」列为禁止行为，自己动手改管道、拆燃气表都在里面。条例同时明确，燃气经营者不得要求用户购买它指定的产品，也不得要求用户接受它提供的服务", "证据等级": "C", "来源出处": "国务院 (2010). 城镇燃气管理条例（国务院令第 583 号）第二十七条：「燃气用户应当遵守安全用气规则，使用合格的燃气燃烧器具和气瓶，及时更换国家明令淘汰或者使用年限已届满的燃气燃烧器具、连接管等」；第二十八条禁止行为含「（一）擅自操作公用燃气阀门」「（二）将燃气管道作为负重支架或者接地引线」「（四）擅自安装、改装、拆除户内燃气设施和燃气计量装置」；第二十条燃气经营者不得「（六）要求燃气用户购买其指定的产品或者接受其提供的服务」；第二十九条用户可就收费、服务向燃气管理等部门投诉，「有关部门应当自收到投诉之日起15个工作日内予以处理」. \u003chttp://www.gov.cn/gongbao/content/2010/content_1758214.htm>；深圳市住房和建设局 (2024). 安全用气小知识（二）：「立即关闭家里的燃气总阀门」「迅速开门、开窗进行通风」「一定不要开、关家里的电灯、抽油烟机等电器」「人员应该迅速撤离，转移到安全的地方，并且及时拨打燃气公司的报警电话」. \u003chttps://zjj.sz.gov.cn/zcjzts/content/post_11882410.html>；张家港市应急管理局 (2024). 燃气安全使用知识：「不要情急之下打开排气扇进行通风」「应远离现场之后才能打电话求助」. \u003chttps://www.zjg.gov.cn/zjgszwz/yjaqzs/202411/72b4fad7399c48378302460c6ce2d55b.shtml>", "备注": "条例原文能逐字核对，但它只说明到期换管是你的义务，不说明换了能少出多少事故。按年限换管能把燃气事故降多少，没找到官方统计数字，所以只给 C 级。有人以「安检」名义上门，检查完就推销自闭阀和报警器。条例第二十条第六项不许燃气公司要求你买它指定的产品，你可以拒绝，也可以投诉。闻到燃气味，先关燃气总阀，瓶装气关钢瓶阀门。再开门开窗通风，别开排气扇。电灯、抽油烟机这些电器一律别开也别关，打火机也别碰。然后人撤出去，离开现场再打燃气公司的报警电话。一氧化碳中毒是另一件事，见第 13 节。", "源文件": "book/01-不要早死.md", "条目编号": "1-4"}, {"标题": "不采、不买、不吃野生蘑菇，任何「土办法鉴别」都不成立", "内容": "光 2025 年一年，全国就有 828 起蘑菇中毒，2165 人中招，13 人死。那一年还新认出 34 种以前没记录过会毒人的蘑菇。银针试毒、虫子吃过就没毒、颜色鲜艳才有毒，这些说法全都不成立。", "所属主题": "不要早死", "成本": "不花钱。难的地方是放弃一种季节性的野味。", "收益": "中国疾控中心 2025 年调查了 828 起蘑菇中毒事件，涉及 2165 人，死亡 13 人。病死率 0.6%，指中毒的人里有 0.6% 死亡。2019 到 2024 年每年 276 到 676 起，病死率在 0.87% 到 2.86% 之间。光 2025 年就鉴定出 138 种有毒蘑菇，其中 34 种是国内第一次记录到会引起中毒", "证据等级": "A", "来源出处": "Mushroom Poisoning Outbreaks — China, 2025. China CDC Weekly (2026)：「In 2025, China CDC investigated 828 mushroom poisoning incidents across 27 provincial-level administrative divisions (PLADs), affecting 2,165 individuals and causing 13 deaths - a case fatality rate of 0.6%, the lowest of the past six years. In total, 138 poisonous mushroom species were identified, including 34 newly recorded in poisoning incidents in China.」「From 2019 to 2024, the annual number of incidents ranged from 276 to 676, and the case fatality rate ranged from 0.87% to 2.86%.」\u003chttps://doi.org/10.46234/ccdcw2026.120>；同刊 2024 年度报告 \u003chttps://doi.org/10.46234/ccdcw2025.106>", "备注": "吃错了就立刻催吐，然后带上剩下的蘑菇或者拍的照片去医院。毒蘑菇中毒分好几种类型，认出是哪一种蘑菇直接决定医生怎么治。每年都有新种类被记录到能毒人，所以「本地人认得清」这个前提本身站不住。银针验毒、和大蒜同煮、虫子吃过就没毒、颜色鲜艳才有毒，这些说法全都不成立。", "源文件": "book/01-不要早死.md", "条目编号": "1-5"}, {"标题": "电动自行车不推进楼道、不进电梯、不在家里充电", "内容": "把电动车推进楼道、推进电梯，或者在家里充电，应急管理部的《高层民用建筑消防安全管理规定》明令禁止。不改正的，个人罚 500 到 1000 元，做生意的罚 2000 到 10000 元。罚款还是小事，要紧的是这种火正好烧在你唯一的逃生通道上。", "所属主题": "不要早死", "成本": "不花钱。难的地方是每次都停到楼下的集中充电点，多走几十米。", "收益": "应急管理部的规章明文禁止：「禁止在高层民用建筑公共门厅、疏散走道、楼梯间、安全出口停放电动自行车或者为电动自行车充电」。楼门厅、走道、楼梯间、安全出口这几处，既不能停车也不能充电。拒不改正的，不做生意的单位和个人罚 500 至 1000 元，做生意的罚 2000 至 10000 元", "证据等级": "A", "来源出处": "应急管理部 (2021). 高层民用建筑消防安全管理规定（应急管理部令第 5 号，第三十七条、第四十七条）. \u003chttps://www.gov.cn/zhengce/zhengceku/2021-08/01/content_5628815.htm>；应急管理部 (2023). 关于政协第十三届全国委员会第五次会议第00969号提案答复的函：「2021年，全国共接报电动自行车火灾1.8万起，造成65人死亡、222人受伤，直接财产损失达2.21亿元，其中发生在建筑物内3782起，造成60人死亡、175人受伤」. \u003chttps://www.mem.gov.cn/gk/jytabljggk/zxwytadfzy/2022zx/202301/t20230119_440918.shtml>；应急管理部 (2025). 2025年1月15日新闻发布会：「火灾起数同比下降42.2%，伤亡人数下降超过90%」. \u003chttps://www.mem.gov.cn/xw/xwfbh/2025n01y15xwfbh_6337/>", "备注": "别买改装电池，别用杂牌充电器，别整夜充着不管。锂电池一旦起火，几十秒里就整片烧开，同时冒出剧毒的烟。车停在楼道里起火，烧的就是你唯一的逃生通道。应急管理部公布的数字是，2021 年全国电动自行车火灾 1.8 万起，死 65 人。其中烧在建筑物里的 3782 起，死了 60 人，死者几乎都在室内。2024 年整治之后，火灾起数比上年降了 42.2%，伤亡降了九成以上，那一年的绝对数没有公布。", "源文件": "book/01-不要早死.md", "条目编号": "1-6"}, {"标题": "量血压，高了就吃药降到达标", "内容": "血压每降 10 mmHg，出大的心血管毛病的概率降两成，中风降 27%，心衰降 28%，死亡概率降 13%。中国 35 到 75 岁的人里，44.7% 有高血压，真正控制住的只有 7.2%。", "所属主题": "不要早死", "成本": "电子血压计 100 到 200 元。量一次 1 分钟。降压药多数每月几元到几十元。难的地方是没症状也要接着吃。", "收益": "把 123 项试验、61 万余人合起来一起算。收缩压每降 10 mmHg，主要心血管事件低约两成。原值 RR 0.80，可信范围 95% CI 0.77 到 0.83。收缩压就是血压两个数里高的那个。卒中（中风）低约 27%（RR 0.73）。心力衰竭低约 28%（RR 0.72）。总死亡率下降 13%（RR 0.87，95% CI 0.84 到 0.91）。中国给 35 到 75 岁的 170 万人做过筛查：44.7% 有高血压。这些人里，知道自己有的占 44.7%，在治疗的占 30.1%，控制住的只有 7.2%", "证据等级": "A", "来源出处": "Ettehad D 等 (2016). Blood pressure lowering for prevention of cardiovascular disease and death: a systematic review and meta-analysis. Lancet. \u003chttps://doi.org/10.1016/S0140-6736(15)01225-8> ; Lu J 等 (2017). Prevalence, awareness, treatment, and control of hypertension in China (China PEACE Million Persons Project). Lancet. \u003chttps://doi.org/10.1016/S0140-6736(17)32478-9>", "备注": "先去量一次血压。中国 10 个高血压的人里只有不到 1 个控制住了，所以量这一次是本书里性价比最高的动作之一。降到多少算达标（130 还是 140）还有讨论，但「知道自己高血压并把它降下来」这件事本身没有争议。", "源文件": "book/01-不要早死.md", "条目编号": "1-7"}, {"标题": "35 岁以后只要超重，就去查一次空腹血糖，正常也每三年再查", "内容": "花几十块抽一管血，就能在一点症状都没有的时候查出糖尿病前期。美国官方的筛查建议是：35 到 70 岁、超重或肥胖的人去查。查出来正常的，每三年再查一次。美国按体重指数 25 算超重，对亚裔放宽到 23；中国标准是 24 就算超重。", "所属主题": "不要早死", "成本": "空腹血糖十几元。糖化血红蛋白几十元。去医院抽一次血就行。", "收益": "美国预防服务工作组是美国官方给筛查建议的机构。它现在的建议是：对 35 到 70 岁、超重或肥胖的成年人筛查糖尿病前期和 2 型糖尿病，哪怕一点症状都没有。超重指体重指数 ≥25，肥胖指 ≥30。对亚裔美国人，它建议把界线降到体重指数 ≥23，因为同样的体重指数下，亚裔的糖尿病风险更高。中国的行业标准是：体重指数 24.0 到 28.0 之间算超重，≥28.0 算肥胖。这条建议的推荐等级是 B。它还写明：「对血糖正常的成年人，每 3 年筛查一次是合理的做法」", "证据等级": "A", "来源出处": "US Preventive Services Task Force (2021). Screening for Prediabetes and Type 2 Diabetes. \u003chttps://www.uspreventiveservicestaskforce.org/uspstf/recommendation/screening-for-prediabetes-and-type-2-diabetes>：「at a lower BMI (≥23) if the patient is Asian American」；国家卫生健康委办公厅 (2024). 居民体重管理核心知识（2024 年版）释义：「根据《成年人体重判定》（WS/T 428-2013）行业标准……24.0≤BMI＜28.0 为超重，BMI≥28.0 为肥胖」. \u003chttps://www.gov.cn/zhengce/zhengceku/202407/P020240703481519509521.pdf>", "备注": "查出糖尿病前期不等于就要吃药。相当一部分人光靠改生活方式就能把它扭回去。中国成人里，知道自己有糖尿病的一直是少数，很多人是等到出了并发症才发现", "源文件": "book/01-不要早死.md", "条目编号": "1-8"}, {"标题": "开车不超速、不酒驾", "内容": "平均车速每高 1%，撞死人的概率高约 4%。酒精没有「喝一点没事」的安全线。血里的酒精浓度还很低的时候，风险就已经开始往上走了。", "所属主题": "不要早死", "成本": "不花钱。开慢一点，一趟多花几分钟。难的地方是饭局上少喝。", "收益": "世界卫生组织（WHO）的说法：平均车速每升高 1%，出人命的事故风险升高 4%。酒驾的风险，从很低的血液酒精浓度起就开始上升", "证据等级": "B", "来源出处": "WHO (2025). Road traffic injuries fact sheet. \u003chttps://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries>", "备注": "速度和死亡的那组 1%、4%，是按事故模型推算出来的，不是随机分组的试验。酒驾这边 WHO 只给了方向，没给数字。「喝多少、风险涨多少」这个问题，本节没有核实过原始文献。", "源文件": "book/01-不要早死.md", "条目编号": "1-9"}, {"标题": "给 4 岁以下儿童用安全座椅，不要抱在怀里", "内容": "一岁以下的婴儿坐安全座椅，车祸里受致命伤的概率低约七成。1 到 4 岁的孩子低约一半。抱在怀里没有这个效果，急刹车时你也抱不住。", "所属主题": "不要早死", "成本": "一个 300 到 2000 元，能用几年。每次上车多花 1 分钟把孩子绑好。", "收益": "美国交通安全主管部门（NHTSA）估计，用安全座椅能让轿车里 1 岁以下婴儿受致命伤的风险下降 71%。1 到 4 岁的幼儿下降 54%。世界卫生组织（WHO）的口径是婴儿死亡下降 71%", "证据等级": "A", "来源出处": "NHTSA (2024). Occupant Protection in Passenger Vehicles: 2022 Data (DOT HS 813 573). \u003chttps://crashstats.nhtsa.dot.gov/Api/Public/ViewPublication/813573> ; WHO (2025). Road traffic injuries fact sheet. \u003chttps://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries>", "备注": "按说明书把座椅固定好，装错等于没装。1 岁以下要反向安装，让孩子面朝车尾。上面的数字是美国官方拿事故数据估出来的。", "源文件": "book/01-不要早死.md", "条目编号": "1-10"}]</script>
+<script>
+(function () {
+  var FALLBACK = JSON.parse(document.getElementById('fallback').textContent);
+  var TOTAL = 650;
+  var FIELDS = [
+    ['内容', '内容'],
+    ['成本', '成本'],
+    ['收益', '收益'],
+    ['来源出处', '来源']
+  ];
+
+  function render(rows, total, mode) {
+    var list = document.getElementById('list');
+    list.textContent = '';
+    rows.forEach(function (r) {
+      var li = document.createElement('li');
+
+      var h = document.createElement('div');
+      var t = document.createElement('span');
+      t.className = 'title';
+      t.textContent = r['标题'];
+      h.appendChild(t);
+      var tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.textContent = '§' + r['所属主题'] + ' · 证据等级 ';
+      h.appendChild(tag);
+      var ev = document.createElement('span');
+      ev.className = 'ev';
+      ev.textContent = r['证据等级'];
+      h.appendChild(ev);
+      li.appendChild(h);
+
+      var dl = document.createElement('dl');
+      FIELDS.forEach(function (pair) {
+        var dt = document.createElement('dt');
+        dt.textContent = pair[1];
+        var dd = document.createElement('dd');
+        if (pair[0] === '来源出处') { dd.className = 'src'; }
+        dd.textContent = r[pair[0]] || '';
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      });
+      li.appendChild(dl);
+      list.appendChild(li);
+    });
+    document.getElementById('total').textContent = total;
+    document.getElementById('mode').textContent = mode;
+  }
+
+  fetch('data.json', { cache: 'no-store' })
+    .then(function (res) {
+      if (!res.ok) { throw new Error('HTTP ' + res.status); }
+      return res.json();
+    })
+    .then(function (all) {
+      render(all.slice(0, 10), all.length, '读取 data.json');
+    })
+    .catch(function () {
+      render(FALLBACK, TOTAL, '内嵌快照 · file:// 无法读取 data.json');
+    });
+})();
+</script>
+</body>
+</html>
