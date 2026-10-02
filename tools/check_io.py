@@ -190,9 +190,12 @@ async function feed(win, doc, text, name) {
     doc = getDoc();
     var cnt = doc.querySelectorAll('.card').length;
     var msg = doc.getElementById('io-msg');
+    /* 加了「操作反馈」模块后，页脚文案会从原始报错换成人话，
+       所以这里判断「是否进入错误状态」，不再匹配原始报错前缀。
+       提示内容是否友好由 tools/check_feedback.py 负责验证。 */
     check('拦截「' + name + '」并报错',
-          returned !== null && returned.indexOf('导入失败') === 0 && msg.classList.contains('err'),
-          returned === null ? '等不到反馈（可能未触发导入）' : '"' + returned.slice(0, 56) + '"');
+          returned !== null && msg.classList.contains('err') && msg.textContent.trim().length > 0,
+          returned === null ? '等不到反馈（可能未触发导入）' : '"' + returned.slice(0, 60) + '"');
     check('「' + name + '」未破坏已有数据', cnt === 2, cnt + ' 条');
   }
 

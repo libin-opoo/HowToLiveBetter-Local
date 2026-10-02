@@ -218,6 +218,14 @@ function contrastScan() {
           document.getElementById('kbd-hint').textContent);
   }
 
+  /* 装了「操作反馈」模块时，先弹一条错误提示，让 toast 里的文字也参与对比度检查。
+     用特性检测包起来，模块没装时这一句不生效，不影响原有检查。 */
+  if (window.HTLBFeedback && window.HTLBFeedback.toast) {
+    window.HTLBFeedback.toast('error', '配色检查用提示', '这是一条用于检查配色的提示文字。',
+                              '它应当和页面里其他文字一样清晰可读。', '技术细节示例文本');
+    await sleep(250);
+  }
+
   var scan = contrastScan();
   check('所有文字对比度达标', scan.bad.length === 0,
         scan.bad.length === 0

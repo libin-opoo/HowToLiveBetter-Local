@@ -797,6 +797,27 @@ HTML = r"""<!doctype html>
 """
 
 
+def _inject_feedback(html, root):
+    """把「操作反馈」模块（assets/feedback.css、assets/feedback.js）内联进页面。
+
+    这是该模块与生成器的**唯一接触点**：只在 </head> 前和 </body> 前各插一段，
+    模板 HTML 里的任何现有内容都不动。想临时停用这个模块，把 main() 里的
+    这一句调用去掉重新生成即可，页面立刻回到原样。
+    """
+    css_path = root / "assets" / "feedback.css"
+    js_path = root / "assets" / "feedback.js"
+    for f in (css_path, js_path):
+        if not f.exists():
+            raise SystemExit(f"缺少操作反馈模块文件：{f}")
+    css = css_path.read_text(encoding="utf-8")
+    js = js_path.read_text(encoding="utf-8")
+    if "</script" in js:
+        raise SystemExit("feedback.js 里出现了 </script，无法安全内联到页面")
+    html = html.replace("</head>", "<style>\n" + css + "\n</style>\n</head>", 1)
+    html = html.replace("</body>", "<script>\n" + js + "\n</script>\n</body>", 1)
+    return html
+
+
 def main():
     root = Path(__file__).resolve().parent.parent
     data = json.loads((root / "data.json").read_text(encoding="utf-8"))
@@ -805,6 +826,9 @@ def main():
     payload = json.dumps(data, ensure_ascii=False).replace("<", "\\u003c")
 
     html = HTML.replace("__DATA__", payload).replace("__TOTAL__", str(len(data)))
+
+    # 增量模块：操作反馈（解耦，可通过去掉这一行回退）
+    html = _inject_feedback(html, root)
 
     out = root / "index.html"
     out.write_text(html, encoding="utf-8")

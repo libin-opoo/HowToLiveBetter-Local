@@ -13,3 +13,4 @@ backups/
 
 # 同步日志
 logs/
+.feedback-probe.html

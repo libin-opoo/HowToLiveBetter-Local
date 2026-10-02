@@ -1,0 +1,115 @@
+/* ============================================================
+   操作反馈模块（feedback.css）
+   ------------------------------------------------------------
+   - 与主样式完全解耦：不覆盖任何现有选择器，只新增 .fb-* 类名
+   - 颜色全部走现有 CSS 变量并带兜底值，因此自动跟随深/浅色模式
+   - 只做视觉层，不含任何业务逻辑
+   ============================================================ */
+
+/* 错误图标的前景色。浅色模式下 --err 是深红、配白字；
+   深色模式下 --err 是浅红，白字会看不清（实测只有 2.04:1），必须配深色字。
+   这两个变量只属于本模块，不去动页面原有的主题变量。 */
+:root { --fb-err-ink: #ffffff; }
+:root[data-theme="dark"] { --fb-err-ink: #3a0f0b; }
+
+/* ---------- 顶部加载条（耗时操作时出现） ---------- */
+.fb-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  z-index: 60; display: none; pointer-events: none;
+}
+body.fb-busy .fb-progress { display: block; }
+.fb-progress::after {
+  content: ""; display: block; height: 100%; width: 34%;
+  background: var(--primary, #2f7fd8);
+  border-radius: 0 3px 3px 0;
+  animation: fb-slide 1.1s ease-in-out infinite;
+}
+@keyframes fb-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(320%); }
+}
+
+/* ---------- 轻量提示（toast） ---------- */
+.fb-toasts {
+  position: fixed; right: 16px; bottom: 16px; z-index: 55;
+  display: flex; flex-direction: column; gap: 10px;
+  width: min(400px, calc(100vw - 32px));
+  pointer-events: none;               /* 容器不吃点击，只有单个 toast 吃 */
+}
+.fb-toast {
+  pointer-events: auto;
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px;
+  background: var(--surface, #fff);
+  color: var(--ink, #16212e);
+  border: 1px solid var(--line, #dbeafe);
+  border-left: 4px solid var(--primary, #2f7fd8);
+  border-radius: 12px;
+  box-shadow: var(--shadow-open, 0 6px 20px rgba(0,0,0,.12));
+  font-size: .875rem; line-height: 1.65;
+  animation: fb-in .22s ease-out;
+}
+.fb-toast.fb-error   { border-left-color: var(--err, #b3271e); }
+.fb-toast.fb-success { border-left-color: var(--primary, #2f7fd8); }
+.fb-toast.fb-leaving { animation: fb-out .18s ease-in forwards; }
+@keyframes fb-in  { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+@keyframes fb-out { to   { opacity: 0; transform: translateY(6px) scale(.98); } }
+
+.fb-icon {
+  flex: 0 0 auto; width: 18px; height: 18px; margin-top: 2px;
+  border-radius: 50%; display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; line-height: 1;
+  background: var(--chip-on-bg, #1f66b4);
+  color: var(--chip-on-ink, #fff);
+}
+.fb-error .fb-icon { background: var(--err, #b3271e); color: var(--fb-err-ink, #fff); }
+
+.fb-body  { flex: 1 1 auto; min-width: 0; }
+.fb-title { font-weight: 600; }
+.fb-line  { margin: 3px 0 0; color: var(--ink-2, #4a5b6d); font-size: .82rem; }
+.fb-line b { color: var(--ink, #16212e); font-weight: 600; }
+
+.fb-raw {
+  margin: 0; max-height: 0; overflow: hidden;
+  color: var(--ink-3, #5c6e84); font-size: .76rem;
+  word-break: break-all; transition: max-height .2s ease;
+}
+.fb-raw.fb-open { max-height: 7em; overflow: auto; margin-top: 5px; }
+
+.fb-toggle {
+  margin-top: 5px; padding: 0; border: 0; background: none;
+  color: var(--primary-dark, #1f66b4); font: inherit; font-size: .76rem;
+  text-decoration: underline; cursor: pointer;
+}
+.fb-close {
+  flex: 0 0 auto; padding: 0 2px; border: 0; background: none;
+  color: var(--ink-3, #5c6e84); font-size: 1.05rem; line-height: 1;
+  cursor: pointer;
+}
+.fb-close:hover, .fb-toggle:hover { opacity: .75; }
+
+/* ---------- 按钮：按下反馈 + 进行中状态 ---------- */
+.fb-pulse { animation: fb-pulse .28s ease-out; }
+@keyframes fb-pulse {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(.955); }
+  100% { transform: scale(1); }
+}
+.fb-pending { position: relative; opacity: .7; pointer-events: none; }
+.fb-pending::after {
+  content: ""; position: absolute; right: 9px; top: 50%;
+  width: 11px; height: 11px; margin-top: -5.5px;
+  border: 2px solid currentColor; border-right-color: transparent;
+  border-radius: 50%; animation: fb-spin .7s linear infinite;
+}
+@keyframes fb-spin { to { transform: rotate(360deg); } }
+
+/* ---------- 窄屏：提示改成贴底通栏，避免挡住内容 ---------- */
+@media (max-width: 560px) {
+  .fb-toasts { right: 8px; left: 8px; bottom: 8px; width: auto; }
+}
+
+/* ---------- 尊重系统的「减少动态效果」设置 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .fb-toast, .fb-pulse, .fb-pending::after, .fb-progress::after { animation: none !important; }
+}
