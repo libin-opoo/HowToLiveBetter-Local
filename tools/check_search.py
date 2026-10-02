@@ -14,8 +14,10 @@ import base64
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 
 PROBE = r"""
@@ -206,7 +208,13 @@ def main():
     browser = find_browser(args.browser)
 
     is_wsl = "microsoft" in os.uname().release.lower()
-    profile = "C:\\Temp\\htlb-search-profile" if is_wsl else "/tmp/htlb-search-profile"
+    # 每次运行用独立 profile：复用同一个目录时，上一次没退干净的 Edge
+    # 会锁住 profile，导致浏览器启动失败、探针偶发取不到结果。
+    _tag = uuid.uuid4().hex[:8]
+    _win = f"C:\\Temp\\htlb-search-{_tag}"
+    _nix = f"/mnt/c/Temp/htlb-search-{_tag}"
+    profile = _win if is_wsl else f"/tmp/htlb-search-{_tag}"
+    profile_dir_to_clean = _nix if is_wsl else profile
 
     probe = root / ".search-probe.html"
     probe.write_text(HARNESS.replace("__PROBE__", PROBE), encoding="utf-8")
@@ -229,6 +237,7 @@ def main():
         results = json.loads(base64.b64decode(m.group(1)).decode("utf-8"))
     finally:
         probe.unlink(missing_ok=True)
+        shutil.rmtree(profile_dir_to_clean, ignore_errors=True)
 
     width = max(len(r["name"]) for r in results)
     failed = 0

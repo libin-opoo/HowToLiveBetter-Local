@@ -131,6 +131,26 @@
     color:var(--ink-2);font-size:.78rem;line-height:1.8;
   }
   .foot a{color:var(--primary-dark)}
+  .foot code{
+    background:var(--primary-soft);color:var(--primary-dark);
+    padding:1px 5px;border-radius:5px;font-size:.76rem;
+  }
+  [hidden]{display:none !important}
+
+  /* 底部：数据导入导出 */
+  .io{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .btn{
+    padding:8px 16px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--primary-dark);
+    font:inherit;font-size:.875rem;line-height:1.3;cursor:pointer;
+    transition:background .15s,border-color .15s;
+  }
+  .btn:hover{background:var(--primary-soft);border-color:#bcd9f7}
+  .btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .btn-ghost{background:transparent;color:var(--ink-2)}
+  .io-msg{margin:0 0 10px;font-size:.8rem;line-height:1.6;color:var(--primary-dark)}
+  .io-msg:empty{display:none}
+  .io-msg.err{color:#c0392b}
   .mode{
     display:inline-block;padding:1px 8px;border-radius:999px;
     background:var(--primary-soft);color:var(--primary-dark);font-size:.75rem;
@@ -173,12 +193,24 @@
   <main class="cards" id="cards"></main>
 
   <footer class="foot">
+    <div class="io">
+      <button class="btn" id="export-btn" type="button">导出数据</button>
+      <button class="btn" id="import-btn" type="button">导入数据</button>
+      <button class="btn btn-ghost" id="reset-btn" type="button" hidden>恢复内置数据</button>
+      <input id="file-input" type="file" accept="application/json,.json" hidden>
+    </div>
+    <p class="io-msg" id="io-msg" role="status"></p>
+    <p>
+      导入导出全部在你自己浏览器里完成，数据不会上传到任何服务器。
+      浏览器无法直接改写磁盘上的 <code>data.json</code>：导入会替换本页正在使用的数据并保存在本机浏览器；
+      要让磁盘文件也跟着更新，导入后点「导出数据」，用它覆盖项目里的 <code>data.json</code>。
+    </p>
     <p>
       数据取自 <a href="https://github.com/eternity4719/HowToLiveBetter" target="_blank" rel="noopener">eternity4719/HowToLiveBetter</a>，
       正文按 <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="noopener">CC BY 4.0</a> 发布，版权归原作者所有。
       本页为本地镜像，内容未作改动。
     </p>
-    <p>数据来源：<span class="mode" id="mode">加载中…</span></p>
+    <p>当前数据来源：<span class="mode" id="mode">加载中…</span></p>
   </footer>
 
 </div>
@@ -407,19 +439,156 @@
     debounceTimer = setTimeout(render, 120);
   });
 
-  function start(rows, mode) {
+  /* ---------------- 本地数据导入 / 导出 ----------------
+     全程在浏览器内完成：导出用 Blob 下载，导入用 FileReader 读取并校验，
+     都不经过网络。浏览器无法直接改写磁盘上的 data.json，所以导入后的数据
+     存在 localStorage 里，并靠「导出数据」把文件同步回项目目录。 */
+
+  var LS_KEY = 'htlb.dataset.v1';
+  var REQUIRED_FIELDS = ['标题', '内容', '所属主题', '成本', '收益', '证据等级', '来源出处'];
+  var exportBtn = document.getElementById('export-btn');
+  var importBtn = document.getElementById('import-btn');
+  var resetBtn = document.getElementById('reset-btn');
+  var fileEl = document.getElementById('file-input');
+  var msgEl = document.getElementById('io-msg');
+
+  function setMsg(text, isErr) {
+    msgEl.textContent = text || '';
+    msgEl.classList.toggle('err', !!isErr);
+  }
+
+  /* 导出：把当前正在使用的数据存成 data.json 下载下来 */
+  function exportData() {
+    var text = JSON.stringify(DATA, null, 2) + '\n';
+    var blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    setMsg('已导出 ' + DATA.length + ' 条到 data.json');
+  }
+
+  /* 校验导入的数据：顶层是数组，每条都有 7 个必填字符串字段，证据等级以 A/B/C 开头 */
+  function validateRecords(obj) {
+    if (!Array.isArray(obj)) { return ['JSON 顶层必须是数组']; }
+    if (!obj.length) { return ['数组是空的，没有可导入的数据']; }
+    var errs = [];
+    for (var i = 0; i < obj.length && errs.length < 5; i++) {
+      var r = obj[i];
+      if (!r || typeof r !== 'object' || Array.isArray(r)) {
+        errs.push('第 ' + (i + 1) + ' 条不是对象');
+        continue;
+      }
+      for (var j = 0; j < REQUIRED_FIELDS.length; j++) {
+        var f = REQUIRED_FIELDS[j];
+        if (typeof r[f] !== 'string' || !r[f].trim()) {
+          errs.push('第 ' + (i + 1) + ' 条缺少字段「' + f + '」');
+          break;
+        }
+      }
+      var ev = r['证据等级'];
+      if (typeof ev === 'string' && 'ABC'.indexOf(ev.trim().charAt(0).toUpperCase()) === -1) {
+        errs.push('第 ' + (i + 1) + ' 条「证据等级」应以 A/B/C 开头');
+      }
+    }
+    return errs;
+  }
+
+  function saveOverride(rows) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(rows)); return true; }
+    catch (e) { return false; }
+  }
+  function loadOverride() {
+    try {
+      var s = localStorage.getItem(LS_KEY);
+      if (!s) { return null; }
+      var o = JSON.parse(s);
+      return (Array.isArray(o) && o.length) ? o : null;
+    } catch (e) { return null; }
+  }
+  function clearOverride() {
+    try { localStorage.removeItem(LS_KEY); } catch (e) { /* 忽略 */ }
+  }
+
+  /* 换数据集：清掉当前的搜索和分类，避免旧筛选条件套在新数据上 */
+  function applyDataset(rows, mode, imported) {
     DATA = rows;
     modeEl.textContent = mode;
+    resetBtn.hidden = !imported;
+    state.q = '';
+    state.cat = '';
+    inputEl.value = '';
+    var chips = catsEl.querySelectorAll('.chip');
+    for (var i = 0; i < chips.length; i++) { chips[i].setAttribute('aria-pressed', 'false'); }
     render();
   }
 
-  fetch('data.json', { cache: 'no-store' })
-    .then(function (res) {
-      if (!res.ok) { throw new Error('HTTP ' + res.status); }
-      return res.json();
-    })
-    .then(function (all) { start(all, 'data.json'); })
-    .catch(function () { start(EMBEDDED, '内嵌快照（file:// 无法读取 data.json）'); });
+  function importFile(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var obj;
+      try { obj = JSON.parse(String(reader.result)); }
+      catch (e) {
+        setMsg('导入失败：不是合法的 JSON（' + e.message + '）', true);
+        return;
+      }
+      var errs = validateRecords(obj);
+      if (errs.length) {
+        setMsg('导入失败：' + errs.join('；'), true);
+        return;
+      }
+      var saved = saveOverride(obj);
+      applyDataset(obj, '本地导入的数据' + (saved ? '（已存本机浏览器）' : '（仅本次会话）'), true);
+      setMsg('已导入 ' + obj.length + ' 条，原数据未丢失，可用「导出数据」备份或用「恢复内置数据」还原' +
+             (saved ? '' : '。注意：本浏览器存储空间不足，刷新后会回到原数据'));
+    };
+    reader.onerror = function () { setMsg('导入失败：读不到文件内容', true); };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  exportBtn.addEventListener('click', exportData);
+  importBtn.addEventListener('click', function () { fileEl.click(); });
+  fileEl.addEventListener('change', function () {
+    var f = fileEl.files && fileEl.files[0];
+    if (f) { importFile(f); }
+    fileEl.value = '';   /* 允许重复导入同一个文件 */
+  });
+  resetBtn.addEventListener('click', function () {
+    clearOverride();
+    setMsg('已恢复内置数据');
+    loadDefault();
+  });
+
+  function loadDefault() {
+    fetch('data.json', { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        return res.json();
+      })
+      .then(function (all) { applyDataset(all, 'data.json', false); })
+      .catch(function () {
+        applyDataset(EMBEDDED, '内嵌快照（file:// 无法读取 data.json）', false);
+      });
+  }
+
+  /* 启动优先级：本机导入的数据 > data.json > 内嵌快照 */
+  var override = loadOverride();
+  if (override) {
+    applyDataset(override, '本地导入的数据（已存本机浏览器）', true);
+    setMsg('正在使用本机导入的数据，共 ' + override.length + ' 条');
+  } else {
+    loadDefault();
+  }
+
+  /* 供自动化测试调用，不参与页面交互 */
+  window.__htlb = {
+    exportText: function () { return JSON.stringify(DATA, null, 2) + '\n'; },
+    count: function () { return DATA.length; }
+  };
 })();
 </script>
 </body>

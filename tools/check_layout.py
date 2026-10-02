@@ -18,8 +18,10 @@ import base64
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 
 HARNESS = """<!doctype html>
@@ -129,7 +131,13 @@ def main():
     widths = [int(w) for w in args.widths.split(",") if w.strip()]
 
     is_wsl = "microsoft" in os.uname().release.lower()
-    profile = "C:\\Temp\\htlb-layout-profile" if is_wsl else "/tmp/htlb-layout-profile"
+    # 每次运行用独立 profile：复用同一个目录时，上一次没退干净的 Edge
+    # 会锁住 profile，导致浏览器启动失败、探针偶发取不到结果。
+    _tag = uuid.uuid4().hex[:8]
+    _win = f"C:\\Temp\\htlb-layout-{_tag}"
+    _nix = f"/mnt/c/Temp/htlb-layout-{_tag}"
+    profile = _win if is_wsl else f"/tmp/htlb-layout-{_tag}"
+    profile_dir_to_clean = _nix if is_wsl else profile
 
     probe = root / ".layout-probe.html"
     probe.write_text(HARNESS.replace("__WIDTHS__", json.dumps(widths)), encoding="utf-8")
@@ -155,6 +163,7 @@ def main():
         payload = json.loads(base64.b64decode(m.group(1)).decode("utf-8"))
     finally:
         probe.unlink(missing_ok=True)
+        shutil.rmtree(profile_dir_to_clean, ignore_errors=True)
 
     if "error" in payload:
         sys.exit(f"探针错误: {payload['error']}")
