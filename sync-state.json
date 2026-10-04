@@ -1,15 +1,15 @@
 {
-  "version": "1.0.0",
-  "recordCount": 650,
+  "version": "1.1.0",
+  "recordCount": 654,
   "upstream": {
     "repo": "eternity4719/HowToLiveBetter",
     "url": "git@github.com:eternity4719/HowToLiveBetter.git",
-    "commit": "fcc93eb9a4bdc26e8a4e4c94bdaae0a89265927b",
-    "commitDate": "2026-10-02 08:03:26 +0800",
-    "subject": "按 issue #63 在第 1 节末尾追加第 41 条：上野外冰面前打孔量厚度，国内官方 15 厘米、美加透明冰 10 厘米白冰翻倍、边走边量、流水和冰钓洞边别去，备注写落冰自救；证据等级按安全指南定为 C，原稿「规避绝大多数事故」无出处未收；第 1 节第 12 条、第 13 节第 25 条补反向指路；统计同步"
+    "commit": "18de323d94777cb4e880b12ef04d5f7cb9d83f1b",
+    "commitDate": "2026-10-03 15:46:12 +0800",
+    "subject": "CLAUDE.md 加规则：没有必要的条目不加，新增前过四问（读者会不会碰上、是不是普遍不知道、动作是不是新的、有没有官方原始来源），拿不准先给评估再写"
   },
-  "syncCount": 0,
-  "lastSyncAt": null,
+  "syncCount": 1,
+  "lastSyncAt": "2026-10-04T10:00:12",
   "history": [
     {
       "version": "1.0.0",
@@ -20,6 +20,16 @@
       "removed": 0,
       "changed": 0,
       "note": "初始基线"
+    },
+    {
+      "version": "1.1.0",
+      "at": "2026-10-04T10:00:12",
+      "upstreamCommit": "18de323d94777cb4e880b12ef04d5f7cb9d83f1b",
+      "records": 654,
+      "added": 6,
+      "removed": 2,
+      "changed": 13,
+      "note": "CLAUDE.md 加规则：没有必要的条目不加，新增前过四问（读者会不会碰上、是不是普遍不知道、动作是不是新的、有没有官方原始来源），拿不准先给评估再写"
     }
   ]
 }
