@@ -1,15 +1,15 @@
 {
-  "version": "1.1.0",
-  "recordCount": 654,
+  "version": "1.2.0",
+  "recordCount": 687,
   "upstream": {
     "repo": "eternity4719/HowToLiveBetter",
     "url": "git@github.com:eternity4719/HowToLiveBetter.git",
-    "commit": "18de323d94777cb4e880b12ef04d5f7cb9d83f1b",
-    "commitDate": "2026-10-03 15:46:12 +0800",
-    "subject": "CLAUDE.md 加规则：没有必要的条目不加，新增前过四问（读者会不会碰上、是不是普遍不知道、动作是不是新的、有没有官方原始来源），拿不准先给评估再写"
+    "commit": "48754739263a51e7705aefe76cf9c8f5bba35762",
+    "commitDate": "2026-10-12 10:48:54 +0800",
+    "subject": "第 10 节补 1 条：摆了酒席也要去领结婚证，没登记不算夫妻、没有配偶继承权，补办效力往前算；第 8 节彩礼条补指路，统计同步"
   },
-  "syncCount": 1,
-  "lastSyncAt": "2026-10-04T10:00:12",
+  "syncCount": 2,
+  "lastSyncAt": "2026-10-12T17:32:03",
   "history": [
     {
       "version": "1.0.0",
@@ -30,6 +30,16 @@
       "removed": 2,
       "changed": 13,
       "note": "CLAUDE.md 加规则：没有必要的条目不加，新增前过四问（读者会不会碰上、是不是普遍不知道、动作是不是新的、有没有官方原始来源），拿不准先给评估再写"
+    },
+    {
+      "version": "1.2.0",
+      "at": "2026-10-12T17:32:03",
+      "upstreamCommit": "48754739263a51e7705aefe76cf9c8f5bba35762",
+      "records": 687,
+      "added": 59,
+      "removed": 26,
+      "changed": 50,
+      "note": "第 10 节补 1 条：摆了酒席也要去领结婚证，没登记不算夫妻、没有配偶继承权，补办效力往前算；第 8 节彩礼条补指路，统计同步"
     }
   ]
 }

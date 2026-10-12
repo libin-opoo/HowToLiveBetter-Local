@@ -1,7 +1,8 @@
-# 正文一改就重新生成三样，挂到固定的 Release「epub-latest」上，下载链接不变：
+# 正文一改就重新生成四样，挂到固定的 Release「epub-latest」上，下载链接不变：
 #   EPUB        https://github.com/eternity4719/HowToLiveBetter/releases/download/epub-latest/HowToLiveBetter.epub
 #   PDF         https://github.com/eternity4719/HowToLiveBetter/releases/download/epub-latest/HowToLiveBetter.pdf
 #   离线单文件  https://github.com/eternity4719/HowToLiveBetter/releases/download/epub-latest/HowToLiveBetter.html
+#   Anki 牌组  https://github.com/eternity4719/HowToLiveBetter/releases/download/epub-latest/HowToLiveBetter.apkg
 # PR 只生成并校验，不发布，产物在 Actions 页面的 artifact 里。
 name: 电子书
 
@@ -66,6 +67,18 @@ jobs:
           node-version: 22
       - run: node tools/check-plain.mjs
 
+  # 拆分规则一致性检查：超长收益、备注和来源的拆分规则有两份（tools/lib/split-items.mjs 给 EPUB、PDF，
+  # index.html 里 <split-rules> 那段给网页和离线版），只改了一边就会四个出口长得不一样。理由同上，不挡发布。
+  split:
+    name: 拆分规则一致性检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/check-split.mjs
+
   # 统计数字检查：README、index.html、og.html 里的条目数、A/B/C 数、链接数等是否和 book/ 对得上。
   # 本地 sync-stats.mjs 要记得跑才会更新，网页上直接合并的 PR 完全经过不了它。理由同上，不挡发布。
   # 只查不改：让 CI 往 main 推提交会和本地分叉，而且 Ubuntu 没有微软雅黑，og.png 截不对。
@@ -99,6 +112,9 @@ jobs:
       - name: 离线单文件 HTML
         run: node tools/offline/build.mjs
 
+      - name: Anki 牌组
+        run: node tools/anki/build.mjs
+
       - name: 装 pandoc、typst 和中文字体
         run: |
           sudo apt-get update
@@ -131,6 +147,7 @@ jobs:
             dist/HowToLiveBetter.epub
             dist/HowToLiveBetter.pdf
             dist/HowToLiveBetter.html
+            dist/HowToLiveBetter.apkg
 
       - name: 发布到 Release epub-latest
         if: github.event_name != 'pull_request'
@@ -139,13 +156,14 @@ jobs:
         run: |
           git tag -f epub-latest
           git push -f origin epub-latest
-          notes="正文提交 ${GITHUB_SHA::7}，生成于 $(date -u -d '+8 hours' +'%Y-%m-%d %H:%M')（北京时间）。EPUB、PDF、离线单文件 HTML 三样，正文每次更新后自动重新生成，下载链接固定不变。"
+          notes="正文提交 ${GITHUB_SHA::7}，生成于 $(date -u -d '+8 hours' +'%Y-%m-%d %H:%M')（北京时间）。EPUB、PDF、离线单文件 HTML、Anki 牌组四样，正文每次更新后自动重新生成，下载链接固定不变。"
           if gh release view epub-latest >/dev/null 2>&1; then
-            gh release edit epub-latest --title "电子书（EPUB / PDF / 离线 HTML，自动更新）" --notes "$notes"
+            gh release edit epub-latest --title "电子书（EPUB / PDF / 离线 HTML / Anki，自动更新）" --notes "$notes"
           else
-            gh release create epub-latest --title "电子书（EPUB / PDF / 离线 HTML，自动更新）" --notes "$notes" --latest=false
+            gh release create epub-latest --title "电子书（EPUB / PDF / 离线 HTML / Anki，自动更新）" --notes "$notes" --latest=false
           fi
           gh release upload epub-latest \
             dist/HowToLiveBetter.epub \
             dist/HowToLiveBetter.pdf \
-            dist/HowToLiveBetter.html --clobber
+            dist/HowToLiveBetter.html \
+            dist/HowToLiveBetter.apkg --clobber

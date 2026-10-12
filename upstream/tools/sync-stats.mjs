@@ -18,35 +18,25 @@
 // 数字口径：条目数 = book/*.md 里的 ### 标题数；节数 = book/*.md 的文件数；
 // A/B/C = 证据等级行的首字母（带（争议）后缀的照样算）；争议 = 备注以「争议」开头的条数；
 // TODO = 正文里含「待核实」或「TODO」的行数；链接 = 「- 来源：」和「- 备注：」行里的 http(s) 总数；
-// 性价比三档的规则抄自 index.html。
+// 性价比三档的规则在 tools/lib/book.mjs，抄自 index.html。
 // 切行用 /\r?\n/，理由见 check-refs.mjs 文件头。
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdtempSync, rmSync, statSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
+import { COST_W as W, ratioOf } from './lib/book.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
 const read = f => readFileSync(join(ROOT, f), 'utf8');
 
-// 档位规则和 index.html 的 COST_W、e.ratio 两行一致；那两行改了这里必须跟着改，所以先比对一次
+// 档位规则（tools/lib/book.mjs）和 index.html 的 COST_W、e.ratio 两行一致；那两行改了那边必须跟着改，所以先比对一次
 const indexText = read('index.html');
 const COST_W_LINE = "const COST_W = { money:{'0':0,'少':1,'多':2}, time:{'少':0,'中':1,'多':2}, will:{'否':0,'些':1,'是':2} };";
 const RATIO_LINE = "e.ratio = e.level === '大' ? (e.cs === 0 ? '极高' : (e.cs <= 2 ? '高' : '一般'))";
-if (!indexText.includes(COST_W_LINE)) throw new Error('index.html 的 COST_W 行变了，请同步本脚本里的成本权重');
-if (!indexText.includes(RATIO_LINE)) throw new Error('index.html 的 e.ratio 行变了，请同步本脚本里的档位规则');
-
-const W = {
-  money: { '0': 0, '少': 1, '多': 2 },
-  time: { '少': 0, '中': 1, '多': 2 },
-  will: { '否': 0, '些': 1, '是': 2 },
-};
-
-function ratioOf(cost, level) {
-  if (level === '大') return cost === 0 ? '极高' : cost <= 2 ? '高' : '一般';
-  return level === '中' && cost === 0 ? '高' : '一般';
-}
+if (!indexText.includes(COST_W_LINE)) throw new Error('index.html 的 COST_W 行变了，请同步 tools/lib/book.mjs 里的成本权重');
+if (!indexText.includes(RATIO_LINE)) throw new Error('index.html 的 e.ratio 行变了，请同步 tools/lib/book.mjs 里的档位规则');
 
 const bookFiles = readdirSync(join(ROOT, 'book')).filter(f => f.endsWith('.md')).sort();
 const sections = bookFiles.length;
