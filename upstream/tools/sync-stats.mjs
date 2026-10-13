@@ -43,6 +43,9 @@ const sections = bookFiles.length;
 let entries = 0, dispute = 0, todo = 0, links = 0;
 const grade = { A: 0, B: 0, C: 0 };
 const ratio = { '极高': 0, '高': 0, '一般': 0 };
+// 成本标签里「人群=」的取值表，和 index.html 的 WHO_LABEL、侧栏「我的情况」按钮一一对应
+const WHO = new Set(['怀孕', '婴幼儿', '孩子', '老人', '35岁', '60岁', '女性']);
+const badWho = [];
 
 for (const f of bookFiles) {
   for (const line of read(join('book', f)).split(/\r?\n/)) {
@@ -54,8 +57,11 @@ for (const f of bookFiles) {
     if (/^- (来源|备注)：/.test(line)) links += (line.match(/https?:\/\//g) ?? []).length;
     const t = line.match(/<!--\s*成本标签:\s*钱=(\S+)\s+时间=(\S+)\s+毅力=(\S+)\s+收益=(\S+)\s+口径=/);
     if (t) ratio[ratioOf(W.money[t[1]] + W.time[t[2]] + W.will[t[3]], t[4])]++;
+    const w = line.match(/<!--\s*成本标签:.*\s人群=(\S+)/);
+    if (w) for (const v of w[1].split(/[,+]/)) if (!WHO.has(v)) badWho.push(`${f}：${v}`);
   }
 }
+if (badWho.length) { console.error(`人群标签有不认识的值（只许 ${[...WHO].join('、')}）：\n  ${badWho.join('\n  ')}`); process.exitCode = 1; }
 
 const tagged = ratio['极高'] + ratio['高'] + ratio['一般'];
 if (tagged !== entries) console.warn(`警告：有 ${entries - tagged} 条缺成本标签，性价比三档对不上条目数`);
@@ -117,10 +123,11 @@ for (const [file, label, pattern, repl] of EDITS) {
 }
 
 if (CHECK) {
-  if (stale.length === 0) {
+  if (stale.length === 0 && !badWho.length) {
     console.log('\n统计数字检查通过');
     process.exit(0);
   }
+  if (stale.length === 0) process.exit(1);   // 只有人群标签的错，上面已经报过
   console.log(`\n有 ${stale.length} 处统计数字过时。本地跑 node tools/sync-stats.mjs（顺带重出 og.png），然后提交。`);
   process.exit(1);
 }

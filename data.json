@@ -816,14 +816,14 @@
     "条目编号": "2-25"
   },
   {
-    "标题": "每天喝三到四杯咖啡，不加糖不加奶盖",
-    "内容": "每天喝三到四杯咖啡的人，同期死亡的概率比不喝的人低约 17%。",
+    "标题": "每天喝三到四杯咖啡，咖啡因总量不超过 400 mg，不加糖不加奶盖",
+    "内容": "每天喝三到四杯咖啡的人，同期死亡的概率比不喝的人低约 17%。另一项研究里，咖啡集中在上午喝的人低约 12%，全天都喝的人看不出差别。一杯咖啡的咖啡因含量差得很大，要按一天总量不超过 400 mg 来控制。",
     "所属主题": "不要慢慢死",
-    "成本": "自己冲每天一两元。冲一杯几分钟，不占什么时间。",
-    "收益": "一篇综述把 201 项汇总研究的结果又合到一起算，这些汇总底下的原始研究都只记录、不分组。结果：每天喝 3–4 杯咖啡的人和不喝的人比，死亡风险低 17%（相对风险 0.83，95% CI 0.79–0.88，这是可信范围）",
+    "成本": "自己冲每天一两元。冲一杯几分钟，不占什么时间。买大杯的要留意一天喝了多少毫克咖啡因。",
+    "收益": "一篇综述汇总了 201 项观察性研究的汇总分析，这些汇总底下的原始研究都只记录、不分组。总死亡率这一项，综述引用了其中一篇剂量与效果关系的汇总分析。每天 3–4 杯咖啡的人和不喝的人比，死亡风险低 17%（相对风险 0.83，95% CI 0.79–0.88，这是可信范围）。每天 7 杯时，降幅缩小到 10%（相对风险 0.90，95% CI 0.85–0.96），没有看到风险回升。美国国家健康与营养调查（NHANES）的一项研究，跟踪了 40 725 名成年人，一半人跟踪满了 9.8 年，也是只记录、不分组。研究把喝咖啡的人分成两类。上午型是咖啡集中在 4:00–11:59 喝、下午和晚上几乎不喝的人，占 36%。他们和不喝咖啡的人比，全因死亡风险低 12%（风险比 0.88，95% CI 0.81–0.96）。再扣除睡眠不足和睡眠困难的影响，低 16%（风险比 0.84，95% CI 0.74–0.95）。心血管病死亡风险低 19%（风险比 0.81，95% CI 0.70–0.94）。扣除睡眠影响后，低 31%（风险比 0.69，95% CI 0.55–0.87）。全天型是上午、下午和晚上都喝的人，占 16%。他们的全因死亡风险看不出差别（风险比 0.99，95% CI 0.90–1.10）。两类人的癌症死亡风险都看不出差别。咖啡因的每日上限有官方依据。欧洲食品安全局（EFSA）和加拿大卫生部都把健康成年人的上限定为每天 400 mg。这是所有来源合计，茶、可乐和能量饮料也要算。EFSA 还要求分散在一天里喝，单次不超过 200 mg。一杯咖啡的含量差得很大。EFSA 的表里，200 mL 一杯滤泡咖啡约 90 mg。加拿大卫生部的表里，8 盎司（237 mL）一杯现煮咖啡平均 135 mg。美国食品药品监督管理局（FDA）的表里，12 盎司（约 355 mL）现煮咖啡含 113–247 mg。所以 FDA 把 400 mg 折成约 2 到 3 杯 12 盎司的咖啡，综述折成约 4 杯。",
     "证据等级": "A",
-    "来源出处": "Poole R, Kennedy OJ, Roderick P, et al. (2017). Coffee consumption and health: umbrella review of meta-analyses of multiple health outcomes. BMJ, 359, j5024. <https://doi.org/10.1136/bmj.j5024>",
-    "备注": "争议在于：原作者写明证据几乎全来自跟踪记录，还说「需要可靠的随机对照试验才能判断是否为因果」。意思是要把人随机分成两组来比，光看跟踪记录断不了因果。做的时候喝黑咖啡，加糖加奶盖会把好处抵消掉。孕妇，还有心律失常、焦虑、失眠的人，不适用这一条",
+    "来源出处": "Poole R, Kennedy OJ, Roderick P, et al. (2017). Coffee consumption and health: umbrella review of meta-analyses of multiple health outcomes. BMJ, 359, j5024. <https://doi.org/10.1136/bmj.j5024>，含更正 BMJ (2018), 360, k194. <https://doi.org/10.1136/bmj.k194>（摘要里总死亡率的可信范围由 0.83–0.88 改为 0.79–0.88）；Wang X, Ma H, Sun Q, et al. (2025). Coffee drinking timing and mortality in US adults. European Heart Journal, 46(8), 749-759. <https://doi.org/10.1093/eurheartj/ehae871>；Yang R, Lei Q, Liu Z, et al. (2024). Relationship between timing of coffee and tea consumption with mortality (total, cardiovascular disease and diabetes) in people with diabetes: the U.S. National Health and Nutrition Examination Survey, 2003–2014. BMC Medicine, 22, 526. <https://doi.org/10.1186/s12916-024-03736-x>；EFSA Panel on Dietetic Products, Nutrition and Allergies (2015). Scientific Opinion on the safety of caffeine. EFSA Journal, 13(5), 4102. <https://doi.org/10.2903/j.efsa.2015.4102>；EFSA 咖啡因专题页（每份含量表）<https://www.efsa.europa.eu/en/topics/topic/caffeine>；FDA. Spilling the Beans: How Much Caffeine Is Too Much? <https://www.fda.gov/consumers/consumer-updates/spilling-beans-how-much-caffeine-too-much>；Health Canada. Caffeine in foods. <https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/caffeine-foods.html>；加糖：Liu D, Li ZH, Shen D, et al. (2022). Association of Sugar-Sweetened, Artificially Sweetened, and Unsweetened Coffee Consumption With All-Cause and Cause-Specific Mortality. Annals of Internal Medicine, 175(7), 909-917. <https://doi.org/10.7326/M21-2977>；Treskes RW, Clausen J, Marott JL, et al. (2023). Use of sugar in coffee and tea and long-term risk of mortality in older adult Danish men. PLOS ONE, 18(10), e0292882. <https://doi.org/10.1371/journal.pone.0292882>；房颤：Wong CX, Cheung CC, Montenegro G, et al. (2026). Caffeinated Coffee Consumption or Abstinence to Reduce Atrial Fibrillation. JAMA, 335(4), 317-325. <https://doi.org/10.1001/jama.2025.21056>；Joglar JA, Chung MK, Armbruster AL, et al. (2024). 2023 ACC/AHA/ACCP/HRS Guideline for the Diagnosis and Management of Atrial Fibrillation. Circulation, 149(1). <https://doi.org/10.1161/CIR.0000000000001193>",
+    "备注": "争议在于：综述作者写明证据大部分来自只跟踪记录的研究，要靠可靠的随机对照试验，才能判断是不是因果。上午喝更好这一点只有一个美国研究，所以没写进标题，作者写明结果不能解释为因果，也可能只是上午喝咖啡的人整体生活更健康。另一项只含糖尿病患者的美国研究里，黎明到上午喝咖啡的人死亡风险高 25%，上午到中午喝的人低 20%，结果相反。这些研究都没有比较 12 点和 14 点哪个更合适。第 3 节第 4 条（下午两点以后不碰咖啡因）讲的是睡眠，要按自己的就寝时间往前推，和这条不冲突。400 mg 是安全上限，不是有益的剂量。无咖啡因的咖啡也有类似的好处，只是略小，所以不用为了凑量多喝。孕妇每天不超过 200 mg（EFSA）或 300 mg（加拿大卫生部）。骨折风险高的女性不适用这一条。焦虑、失眠的人也不适用，这是本书的判断，综述里没有这两类人的结论。有房颤的人不必一律戒咖啡。一项试验里，持续性房颤电复律后每天喝约 1 杯咖啡的人，复发比戒咖啡的人少（47% 对 64%）。2023 年美国房颤指南也不建议为预防发作戒咖啡，但喝了会诱发症状的人要减。其他心律失常没有证据，听医生的。死亡率这一项没有看到加糖会抵消好处。但糖浆和奶盖类饮品没有研究，糖量又大，所以仍然建议不加。",
     "源文件": "book/02-不要慢慢死.md",
     "条目编号": "2-26"
   },
@@ -1081,13 +1081,13 @@
   },
   {
     "标题": "下午两点以后不碰咖啡因",
-    "内容": "睡前 6 小时喝一大杯咖啡（400 mg），当晚用仪器测出来少睡 1 小时以上。可自己写的睡眠日记根本看不出差别。一杯普通咖啡（107 mg）要在睡前 8.8 小时以上喝完，才不影响睡眠。十一点睡的人，下午两点就是界线。",
+    "内容": "睡前 6 小时吃下 400 mg 咖啡因，差不多是三四杯咖啡，当晚用仪器测出来少睡 1 小时以上。可自己写的睡眠日记根本看不出差别。一杯 250 mL 的咖啡（107 mg）要在睡前 8.8 小时以上喝完，才不影响睡眠。十一点睡的人，下午两点就是界线。",
     "所属主题": "不要浪费精力",
     "成本": "不花钱。习惯下午喝咖啡的人，要忍住不喝，需要一点毅力。",
-    "收益": "睡前 6 小时喝 400 mg 咖啡因，仪器测到的总睡眠时间比喝安慰剂少 1.1 到 1.2 小时。安慰剂就是不含咖啡因的对照饮料。可是受试者自己写的睡眠日记没有报出差别，自己察觉不到。把多项研究合起来算（荟萃分析）：咖啡因平均让总睡眠时间减少 45 分钟。躺在床上真正睡着的比例（睡眠效率）下降 7%。一杯咖啡（107 mg）要在睡前 8.8 小时以上喝完，才不影响睡眠。",
+    "收益": "睡前 6 小时吃下含 400 mg 咖啡因的药片（按一杯 250 mL 含 107 mg 算，约三四杯咖啡的量），仪器测到的总睡眠时间比吃安慰剂片少 1.1 到 1.2 小时。安慰剂片外观一样，但不含咖啡因。可是受试者自己写的睡眠日记没有报出差别，自己察觉不到。把多项研究合起来算（荟萃分析）：咖啡因平均让总睡眠时间减少 45 分钟。躺在床上真正睡着的比例（睡眠效率）下降 7%。一杯 250 mL 的咖啡（107 mg）要在睡前 8.8 小时以上喝完，才不影响睡眠。",
     "证据等级": "A",
     "来源出处": "Drake, Roehrs, Shambroom & Roth (2013). Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed. Journal of Clinical Sleep Medicine. <https://doi.org/10.5664/jcsm.3170>；Gardiner et al. (2023). The effect of caffeine on subsequent sleep: A systematic review and meta-analysis. Sleep Medicine Reviews. <https://doi.org/10.1016/j.smrv.2023.101764>",
-    "备注": "Drake 那项只有一个实验室做过，用的 400 mg 偏大，大约两三杯咖啡。咖啡因代谢慢的人，截止时间还要更早。少喝咖啡因换回来的是睡眠时长，和第 3 条（每晚睡够 7 到 8 小时）叠加。",
+    "备注": "Drake 那项只有一个实验室做过，用的 400 mg 偏大，等于一次喝掉一天的上限，上限见第 2 节第 26 条（三到四杯咖啡）。咖啡因代谢慢的人，截止时间还要更早。少喝咖啡因换回来的是睡眠时长，和第 3 条（每晚睡够 7 到 8 小时）叠加。",
     "源文件": "book/03-不要浪费精力.md",
     "条目编号": "3-4"
   },
@@ -2518,6 +2518,18 @@
     "备注": "争议。2023 年一项研究从美国论坛抽了 195 个患者提问，让医疗人员不看来源打分。78.6% 的评分认为 ChatGPT 答得比医生好。但它比的是回答写得好不好，没看提问的人最后判断对没有。试验用的是 2024 年的模型，新模型可能更强。不过同一项试验也发现，AI 单独考试的成绩预测不了普通人用它的效果。AI 为什么会编，OpenAI 的研究人员 2025 年在一篇未经同行评审的论文里解释过。训练和打分的方式奖励「猜一个答案」，答「不知道」拿不到分，所以它没把握时也说得很肯定。核对的办法是让它写出法条名称和条号、指南或论文题目，你去官方网站打开原文找那句话，找不到就当它没说过。提问时别把自己的结论写进去，问「这种情况法律怎么规定」，别问「这种情况我是不是赢定了」。突然嘴歪、一侧没劲、胸口压着疼这类信号，别先问 AI，直接打 120，见第 13 节第 3 条（嘴歪、一侧胳膊没劲）和第 13 节第 7 条（胸口压着疼）。打官司没钱请律师的，见第 7 节第 3 条（申请法律援助）。收益定小，因为只有「认没认出病」这类中间指标，没有少死人的数字。受益人是你自己和家里人。",
     "源文件": "book/06-反面清单.md",
     "条目编号": "6-31"
+  },
+  {
+    "标题": "不要因为「人随时会死，早点把钱花完才快乐」就不存钱，三十岁的人约九成能活到六十岁",
+    "内容": "按世界卫生组织给中国算的数，三十岁的人约九成二能活到六十岁，一半以上能活到八十岁。年轻人普遍把自己早死的可能估得太高，照这个感觉过日子，存下的钱比该存的少约四分之一。多数人该担心的是钱比人先没了。",
+    "所属主题": "反面清单",
+    "成本": "不花钱。要做的是在冒出「反正说不定哪天就没了」的念头时，先想一下自己活到六十岁的概率。难在周围人都这么说，想买的东西又就在眼前。",
+    "收益": "先看能活到多少岁。世界卫生组织的全球卫生观察站给中国算了 2023 年的生命表。生命表是按当年各个年龄的死亡率，推算一群人能活多久的表。按这张表，30 岁的人活到 60 岁的概率是 92.0%（男 89.2%，女 94.9%）。活到 65 岁是 87.4%（男 83.0%，女 92.0%）。活到 80 岁是 55.6%（男 45.8%，女 66.1%）。这三组数是拿表里各年龄还活着的人数相除算出来的。活到 65 岁的人，平均还能再活 17.5 年。再看人们自己怎么估。2019 年《金融学杂志》（The Journal of Finance）上的一项研究做了问卷，请人估自己能活多久。结果是年轻人低估自己活下去的概率，老人高估。论文早先的工作稿举过一个例子：一名 28 岁男性实际活过 5 年的概率是 99.4%，他自己估的是 92.8%。作者把人们自己估的概率放进一个标准的「一辈子怎么存钱花钱」的模型里算。和按实际死亡率算相比，年轻人少存 26%，退休的人花存款慢 27%。问卷里把生死估得越歪的人，存钱的做法也越偏，扣掉风险偏好、认知能力和家庭条件之后仍然如此。作者认为，一个原因是人们把少见、让人印象深的死法看得太重",
+    "证据等级": "B",
+    "来源出处": "World Health Organization, Global Health Observatory. Life tables: lx - number of people left alive at age x, China, 2023（指标 LIFE_0000000031）. <https://ghoapi.azureedge.net/api/LIFE_0000000031?$filter=SpatialDim%20eq%20'CHN'%20and%20TimeDim%20eq%202023>；World Health Organization, Global Health Observatory. Life tables: ex - expectation of life at age x, China, 2023（指标 LIFE_0000000035）. <https://ghoapi.azureedge.net/api/LIFE_0000000035?$filter=SpatialDim%20eq%20'CHN'%20and%20TimeDim%20eq%202023>；Heimer RZ, Myrseth KOR, Schoenle RS (2019). YOLO: Mortality Beliefs and Household Finance Puzzles. The Journal of Finance, 74(6), 2957-2996. <https://doi.org/10.1111/jofi.12828>；Heimer RZ, Myrseth KOR, Schoenle RS (2016). YOLO: Mortality Beliefs and Household Finance Puzzles. SSRN 工作稿（28 岁男性那个例子出自这一版）. <https://doi.org/10.2139/ssrn.2749543>",
+    "备注": "定 B 级有几条理由。生命表是世界卫生组织的模型估算，不是国家统计局公布的数。「少存 26%」是模型算出来的，不是跟踪真人数出来的。估生死那项只有一项研究，中国人群没有可以引用的同类数据。收益量级定中，沿用本节第 23 条（别指望买东西改善心情）的口径。少存的钱可能到万元级，但没有数字说明它换回多少，所以不记成大。同一项研究也发现，老人反过来把自己活多久估得太高，存款花得太慢，所以这条主要写给年轻人和中年人。这里不反对为喜欢的东西和经历花钱，要拦的只是「反正会死」这一个理由。真被意外或重病撞上，用得上的是应急金和保险，见第 5 节第 27 条（应急金）和第 5 节第 39 条（扛不住的损失买保险）。家里有人靠你的收入过日子的，见第 5 节第 40 条（定期寿险）。心情差就下单的，见本节第 23 条（买东西改善心情）。受益人是你自己。",
+    "源文件": "book/06-反面清单.md",
+    "条目编号": "6-32"
   },
   {
     "标题": "失业了先在线申领失业保险金",
@@ -5833,13 +5845,13 @@
   },
   {
     "标题": "冲奶粉用 70 ℃ 以上的水，冲好放凉再喂，喝剩的倒掉",
-    "内容": "奶粉不是无菌的，可能带一种叫阪崎克罗诺杆菌的细菌。新生儿一旦感染，报告的病死率在四成到八成之间。冲的时候先把热水倒进奶瓶，等水温降到约 73.8 ℃ 再放奶粉。这时奶液还在 70 ℃ 以上，能把这种菌杀到原来的十万分之一以下。冲好放凉再喂，喝剩的倒掉。",
+    "内容": "奶粉不是无菌的，可能带一种细菌，新生儿感染后四成到八成会死。先倒热水，等降到约 73.8 ℃ 再放奶粉，能把这种菌杀到原来的十万分之一以下。热水会让维生素 C 少一些，但测过的奶粉仍够标准。冲好放凉再喂，喝剩的倒掉。",
     "所属主题": "刚出生的孩子怎么带",
     "成本": "不花钱。每次多等几分钟把奶放凉。难在孩子饿得哭的时候，也要等水温降下来再冲",
-    "收益": "奶粉不是无菌的，可能带阪崎克罗诺杆菌。新生儿感染后的病死率，报告为 40% 到 80%。实验研究显示：先把热水倒进奶瓶，等水温降到约 73.8 ℃ 再加奶粉，绝大多数情况下奶液温度还在 70 ℃ 以上。这样可以让这种菌减少 5 个对数级以上，降到原来的十万分之一以下",
+    "收益": "奶粉不是无菌的，可能带阪崎克罗诺杆菌。新生儿感染后的病死率，报告为 40% 到 80%。实验研究显示：先把热水倒进奶瓶，等水温降到约 73.8 ℃ 再加奶粉，绝大多数情况下奶液温度还在 70 ℃ 以上。这样可以让这种菌减少 5 个对数级以上，降到原来的十万分之一以下。热水的代价：世卫和联合国粮农组织 2006 年专家会议看到的数据是，用开水冲只有维生素 C 明显减少，4 种奶粉减少 5.6% 到 65.6%。奶粉出厂时维生素 C 本来就多加了，减得最多的那种冲好后仍有 9.0 毫克每 100 千卡，高于国际食品法典标准的下限 8 毫克。会议只看到这一项研究，所以没有就此下结论",
     "证据等级": "A",
-    "来源出处": "Beary MA, Daly SE, Baker J, Snyder AB (2025). Assessing Hot Water Reconstitution Instructions and Labeling of Powdered Infant Formula to Ensure Cronobacter spp. Reduction. Journal of Food Protection, 88(9), 100571. <https://doi.org/10.1016/j.jfp.2025.100571>；Sima WG, Legesse T, Girma S, et al. (2025). Emerging microbial risks: Cronobacter sakazakii in powdered infant formula for infants under six months of age in Ethiopia. BMC Microbiology, 26, 307. <https://doi.org/10.1186/s12866-025-04380-y>；World Health Organization & FAO (2007). Safe preparation, storage and handling of powdered infant formula: guidelines. <https://www.who.int/publications/i/item/9789241595414>",
-    "备注": "70 ℃ 这个门槛来自公共卫生指南。Beary 等人的原话是「针对高危婴儿照护者的公共卫生指南建议用加热到至少 70 ℃（158 ℉）的水冲调配方奶粉以灭活微生物」。早产儿、体重偏低的孩子和不满 2 个月的孩子风险最高。别用保温杯里放了一天的水来冲。也别把冲好的奶搁在室温下，等着下一顿再喂",
+    "来源出处": "Beary MA, Daly SE, Baker J, Snyder AB (2025). Assessing Hot Water Reconstitution Instructions and Labeling of Powdered Infant Formula to Ensure Cronobacter spp. Reduction. Journal of Food Protection, 88(9), 100571. <https://doi.org/10.1016/j.jfp.2025.100571>；Sima WG, Legesse T, Girma S, et al. (2025). Emerging microbial risks: Cronobacter sakazakii in powdered infant formula for infants under six months of age in Ethiopia. BMC Microbiology, 26, 307. <https://doi.org/10.1186/s12866-025-04380-y>；World Health Organization & FAO (2007). Safe preparation, storage and handling of powdered infant formula: guidelines. <https://www.who.int/publications/i/item/9789241595414>；Bundesinstitut für Risikobewertung (2022). Recommendations for the hygienic preparation of powdered infant formula. Updated BfR Opinion No. 009/2022. <https://doi.org/10.17590/20220510-104706>；Agostoni C, Axelsson I, Goulet O, et al. (2004). Preparation and handling of powdered infant formula: a commentary by the ESPGHAN Committee on Nutrition. Journal of Pediatric Gastroenterology and Nutrition, 39(4), 320-322. <https://doi.org/10.1097/00005176-200410000-00002>；Silano M, Paganin P, Davanzo R (2016). Time for the 70 °C water precautionary option in the home dilution of powdered infant formula. Italian Journal of Pediatrics, 42, 17. <https://doi.org/10.1186/s13052-016-0228-9>；Losio MN, Pavoni E, Finazzi G, et al. (2018). Preparation of Powdered Infant Formula: Could Product's Safety Be Improved? Journal of Pediatric Gastroenterology and Nutrition, 67(4), 543-546. <https://doi.org/10.1097/MPG.0000000000002100>",
+    "备注": "争议：德国联邦风险评估研究所 2022 年的意见是，足月健康的孩子用 20 到 50 ℃ 的水冲就行。它提到多数厂家罐上写的也是 40 到 50 ℃。它的理由是 70 ℃ 的水倒进奶瓶凉得很快，实际杀的菌没有算出来那么多。热水还会损失一些营养，没放凉就喂会烫着孩子。欧洲儿科胃肠肝病营养学会 2004 年也不赞成用开水冲，担心破坏维生素和奶粉里加的益生菌。世卫和联合国粮农组织仍建议 70 ℃ 以上。早产儿、出生体重不到 2500 克的、不满 2 个月的和免疫力差的孩子风险最高，要按 70 ℃ 冲，或者问医生。足月健康的孩子按罐上的温度冲，德国这份意见认为感染风险极低。70 ℃ 这个门槛来自公共卫生指南。Beary 等人的原话是「针对高危婴儿照护者的公共卫生指南建议用加热到至少 70 ℃（158 ℉）的水冲调配方奶粉以灭活微生物」。别用保温杯里放了一天的水来冲。也别把冲好的奶搁在室温下，等着下一顿再喂",
     "源文件": "book/20-刚出生的孩子怎么带.md",
     "条目编号": "20-5"
   },
@@ -6478,6 +6490,30 @@
     "备注": "证据等级定 B，是因为文件只写了评聘怎么衔接，没有全国统一的「评上涨多少」的数字。能照着做的是：在事业单位和国企，先问人事部门本单位的岗位空缺和聘任规则。在私企，先问老板这张证认不认、加不加钱。",
     "源文件": "book/23-学什么技能划算.md",
     "条目编号": "23-23"
+  },
+  {
+    "标题": "本科毕业要不要接着读硕士：先算学费和少挣的两三年工资，再看自己读的专业多挣不多挣",
+    "内容": "读硕士要花学费，还要少挣两三年工资，后者通常是大头。英国一项研究扣掉个人差别后，35 岁时读过硕士的女性只多挣约 2%，男性还少挣约 2%。法律、经济、管理类多挣约两成，艺术、英语、哲学类反而少一成以上，所以要按自己的专业算。",
+    "所属主题": "学什么技能划算",
+    "成本": "不花钱。查一次招生简章和学费标准，再按手上的工作机会算一次账，大概一两个小时。",
+    "收益": "先看花费。2013 年的国家意见规定，全日制学术学位硕士的学费原则上每年不超过 8000 元。全日制专业学位硕士按原来的收费政策执行，不受这条上限管，常常贵得多。招生计划内的全日制研究生都能领研究生国家助学金，硕士每年不低于 6000 元，具体标准由各地定。再看回报。英国教育部 2020 年发布的研究用全国学籍和纳税记录，跟踪 1990 年代中期到 2000 年代中期本科毕业的人。研究扣掉了家庭背景和本科成绩的差别，看 35 岁时的收入。原文是「we estimate returns of 2% (women) and -2% (men) for masters」：读过硕士的女性比只读本科的多挣约 2%，男性少挣约 2%。专业差别很大。女性读法律、经济、管理类硕士多挣约 20%，读艺术、英语、哲学类的少挣 10% 以上。男性多数专业的硕士回报显著为负，但法律、经济、管理和工科仍明显为正",
+    "证据等级": "B",
+    "来源出处": "财政部、国家发展改革委、教育部 (2013). 关于完善研究生教育投入机制的意见（财教〔2013〕19号）. <https://www.gov.cn/gongbao/content/2013/content_2404719.htm>：「原则上，现阶段全日制学术学位研究生学费标准，硕士生每生每年不超过8000元，博士生每生每年不超过1万元。全日制专业学位研究生以及目前已按规定实行收费政策的研究生，暂执行原收费政策」「博士生资助标准不低于每生每年1万元，硕士生资助标准不低于每生每年6000元」；Britton J, Buscha F, Dickson M, van der Erve L, Vignoles A, Walker I, Waltmann B, Zhu Y (2020). The earnings returns to postgraduate degrees in the UK. Department for Education. <https://assets.publishing.service.gov.uk/media/5f609e478fa8f5106d1563cc/PG_LEO_report_FINAL.pdf>",
+    "备注": "争议。英国以前的研究算出来的硕士回报一直是正的，这项研究的作者认为是自己的数据更细、扣得更干净。作者也承认扣不掉动机和职业偏好这类差别。数据只到 35 岁，用的是二三十年前毕业的人，国内也没找到同样扣掉个人差别的数字，所以只能当方向参考。证据等级因此定 B。算账的办法和本节第 6 条（读书还是打工）一样，把两三年少挣的工资对上往后每年多挣的那一截。有的岗位招聘公告直接写明要硕士，比如高校、科研院所和部分国企，这时候学历门槛本身就是回报，要单独算。",
+    "源文件": "book/23-学什么技能划算.md",
+    "条目编号": "23-24"
+  },
+  {
+    "标题": "硕士毕业要不要接着读博士：目标岗位明确要博士才读，读之前把心理负担也算进去",
+    "内容": "同一项英国研究里，扣掉个人差别后，35 岁时博士比只读本科的女性多挣约 8%，男性反而少挣约 9%。读博的心理负担也重，各国博士生里约四分之一有明显的抑郁症状，约六分之一有明显的焦虑症状。所以只有目标工作非博士不招时，读博才划算。",
+    "所属主题": "学什么技能划算",
+    "成本": "不花钱。去目标单位的招聘公告里查一遍学历要求，再找两三个在读博士聊一次。",
+    "收益": "本节第 24 条（读硕士）引的英国教育部 2020 年研究，也算了博士。原文是「8% (women) and -9% (men) for PhDs」：扣掉家庭背景和本科成绩的差别后，35 岁时博士比只读本科的女性多挣约 8%，男性少挣约 9%。研究还发现，博士降低了失业和年收入低于 3 万英镑的可能，也降低了年收入超过 4 万英镑的可能。不同学科差别大，数学博士的回报特别低，心理学博士是回报最高的之一。读博期间的心理负担看 2021 年的一篇汇总分析。16 项研究、23469 名博士生里，有明显抑郁症状的合计约 24%（95% CI 18%–31%，可信范围）。9 项研究、15626 名博士生里，有明显焦虑症状的约 17%（12%–23%）。各研究之间差别很大（I² 约 98%）。国内的花费照 2013 年意见：全日制学术学位博士学费原则上每年不超过 1 万元，研究生国家助学金每年不低于 1 万元",
+    "证据等级": "B",
+    "来源出处": "Britton J, Buscha F, Dickson M, van der Erve L, Vignoles A, Walker I, Waltmann B, Zhu Y (2020). The earnings returns to postgraduate degrees in the UK. Department for Education. <https://assets.publishing.service.gov.uk/media/5f609e478fa8f5106d1563cc/PG_LEO_report_FINAL.pdf>；Satinsky EN, Kimura T, Kiang MV, et al. (2021). Systematic review and meta-analysis of depression, anxiety, and suicidal ideation among Ph.D. students. Scientific Reports, 11, 14370. <https://doi.org/10.1038/s41598-021-93687-7>；Liu H, Gao Y, Tuerxun N, Cabirou L (2026). More than Depression: Doctoral Students' Mental Health in China: A Systematic Review and Meta-Analysis. Behavioral Sciences, 16, 1355. <https://doi.org/10.3390/bs16081355>；财政部、国家发展改革委、教育部 (2013). 关于完善研究生教育投入机制的意见（财教〔2013〕19号）. <https://www.gov.cn/gongbao/content/2013/content_2404719.htm>",
+    "备注": "争议。抑郁焦虑那组数字只是把各国调查的比例合起来，没有和同龄人对比，用的量表也不一样。所以它说明博士生里这类症状常见，说明不了是读博造成的。国内中文研究的汇总发现，博士生和硕士生的心理症状差别不大，但都比全国常模和青年常模高。收入数字的局限和本节第 24 条（读硕士）一样，只能当方向参考。高校教职、科研院所和部分研发岗的招聘公告常写明要博士，想走这条路的，先把目标单位近几年的公告翻一遍。读的过程中情绪低落持续两周以上，先做第 3 节第 18 条（情绪低落时先做的几件事）那几件事，有自杀念头打 12356，见第 1 节第 25 条（抑郁或有自杀念头时打 12356）。",
+    "源文件": "book/23-学什么技能划算.md",
+    "条目编号": "23-25"
   },
   {
     "标题": "常见病先在社区看，经基层逐级转诊上去，住院起付线接着算",
