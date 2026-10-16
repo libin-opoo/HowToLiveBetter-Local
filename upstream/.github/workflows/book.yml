@@ -87,10 +87,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # updates.mjs 要翻 git 历史
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: node tools/sync-stats.mjs --check
+      - run: node tools/updates.mjs --check
 
   build:
     runs-on: ubuntu-latest

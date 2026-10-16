@@ -21,6 +21,8 @@ const corpus = {
   readme,
   parts: Object.fromEntries(files.map(f => [f, read(f)])),
   docs: Object.fromEntries(docs.map(f => [f, read(f)])),
+  // 最近更新的标记，tools/updates.mjs 生成、入库
+  updates: JSON.parse(read('updates.json')),
 };
 // </script 会提前关掉脚本标签；\/ 在 JS 字符串里就是 /，内容不变
 const corpusJson = JSON.stringify(corpus).replace(/<\/script/gi, '<\\/script');

@@ -1,6 +1,6 @@
 // 统计对齐：改完条目跑一次。按顺序做四件事：
 // ① 重算全书的统计数字，回写 README.md、index.html、tools/og.html；
-// ② 调 check-refs.mjs 重算 docs/引用对照.md；
+// ② 调 check-refs.mjs 重算 docs/引用对照.md，调 updates.mjs 重算 updates.json；
 // ③ 调 check-plain.mjs 查说人话，不合格只提示不中断；
 // ④ 用无头 Chrome 把 tools/og.html 重新截成 og.png。
 //
@@ -141,6 +141,10 @@ const runTool = name => spawnSync(process.execPath, [join(ROOT, 'tools', name)],
 console.log('');
 if (runTool('check-refs.mjs') !== 0) throw new Error('check-refs.mjs 失败');
 console.log('提交前扫一眼 docs/引用对照.md 的 diff：条号没动而「指向的条目」变了，就是被顺延撞歪的引用。');
+
+// 最近更新：检索页的「新增」「改过」标记，工作区里没提交的改动算今天
+console.log('');
+if (runTool('updates.mjs') !== 0) throw new Error('updates.mjs 失败');
 
 // ③ 说人话检查只提示不中断：数字已经同步完了，卡在这里反而让人以为统计没更新。CI 里它会红
 console.log('');
